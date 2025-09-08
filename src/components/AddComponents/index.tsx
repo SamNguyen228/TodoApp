@@ -24,7 +24,7 @@ export default function InputAdd() {
         onPressEnter={handleAdd}
         autoFocus
       />
-      <Button color="green" variant="solid" onClick={handleAdd} icon={<PlusCircleTwoTone />} className="hover:scale-125"></Button>
+      <Button color="blue" variant="solid" onClick={handleAdd} icon={<PlusCircleTwoTone />}  className="hover:scale-125"></Button>
     </div>
   );
 }

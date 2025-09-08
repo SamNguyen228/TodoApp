@@ -10,7 +10,6 @@ import { notification } from "antd";
 import Icon from "@/components/IconComponents";
 
 export default function App() {
-
   const [api, contextHolder] = notification.useNotification();
 
   return (

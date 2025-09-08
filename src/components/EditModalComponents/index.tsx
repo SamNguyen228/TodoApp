@@ -17,9 +17,11 @@ export default function EditModal() {
             cancelText="Hủy"
             onCancel={() => setEditing(null)}
             onOk={() => {
-                if (editing) {
+                if (editing && editing.text.trim()) {
                     editTodo(editing.id, editing.text);
                     setEditing(null);
+                } else {
+                    alert("Vui lòng nhập dữ liệu!");
                 }
             }}
         >

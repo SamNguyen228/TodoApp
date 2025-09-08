@@ -48,7 +48,7 @@ export default function Action({ notify }: ActionProps) {
         cancelText="Hủy"
         onConfirm={handleDelete}
       >
-        <Button danger className="hover:scale-110" disabled={selectedIds.length === 0}>
+        <Button color="red" variant="solid" className="hover:scale-110" disabled={selectedIds.length === 0}>
           Xoá
         </Button>
       </Popconfirm>

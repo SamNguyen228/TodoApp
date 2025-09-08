@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export interface Todo {
   id: number;
@@ -25,82 +26,66 @@ interface TodoState {
   setEditing: (todo: { id: number; text: string } | null) => void;
 }
 
-const loadTodos = (): Todo[] => {
-  try {
-    const data = localStorage.getItem("todos");
-    return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
-};
+export const useTodoStore = create<TodoState>()(
+  persist(
+    (set) => ({
+      todos: [],
+      filter: "all",
+      selectedIds: [],
+      editing: null,
 
-const saveTodos = (todos: Todo[]) => {
-  localStorage.setItem("todos", JSON.stringify(todos));
-};
+      addTodo: (text) =>
+        set((state) => ({
+          todos: [...state.todos, { id: Date.now(), text, completed: false }],
+        })),
 
-export const useTodoStore = create<TodoState>((set) => ({
-  todos: loadTodos(),
-  filter: "all",
-  selectedIds: [],
-  editing: null,
+      toggleTodo: (id) =>
+        set((state) => ({
+          todos: state.todos.map((todo) =>
+            todo.id === id ? { ...todo, completed: !todo.completed } : todo
+          ),
+        })),
 
-  addTodo: (text) =>
-    set((state) => {
-      const newTodos = [...state.todos, { id: Date.now(), text, completed: false }];
-      saveTodos(newTodos);
-      return { todos: newTodos };
+      deleteTodo: (id) =>
+        set((state) => ({
+          todos: state.todos.filter((todo) => todo.id !== id),
+        })),
+
+      editTodo: (id, text) =>
+        set((state) => ({
+          todos: state.todos.map((todo) =>
+            todo.id === id ? { ...todo, text } : todo
+          ),
+        })),
+
+      deleteMany: (ids) =>
+        set((state) => ({
+          todos: state.todos.filter((t) => !ids.includes(t.id)),
+          selectedIds: [],
+        })),
+
+      completeMany: (ids) =>
+        set((state) => ({
+          todos: state.todos.map((t) =>
+            ids.includes(t.id) ? { ...t, completed: true } : t
+          ),
+          selectedIds: [],
+        })),
+
+      setFilter: (filter) => set({ filter }),
+
+      setSelectedIds: (ids) => set({ selectedIds: ids }),
+      toggleSelect: (id, checked) =>
+        set((state) => ({
+          selectedIds: checked
+            ? [...state.selectedIds, id]
+            : state.selectedIds.filter((i) => i !== id),
+        })),
+
+      setEditing: (todo) => set({ editing: todo }),
     }),
-
-  toggleTodo: (id) =>
-    set((state) => {
-      const newTodos = state.todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      );
-      saveTodos(newTodos);
-      return { todos: newTodos };
-    }),
-
-  deleteTodo: (id) =>
-    set((state) => {
-      const newTodos = state.todos.filter((todo) => todo.id !== id);
-      saveTodos(newTodos);
-      return { todos: newTodos };
-    }),
-
-  editTodo: (id, text) =>
-    set((state) => {
-      const newTodos = state.todos.map((todo) =>
-        todo.id === id ? { ...todo, text } : todo
-      );
-      saveTodos(newTodos);
-      return { todos: newTodos };
-    }),
-
-  deleteMany: (ids) =>
-    set((state) => {
-      const newTodos = state.todos.filter((t) => !ids.includes(t.id));
-      saveTodos(newTodos);
-      return { todos: newTodos, selectedIds: [] };
-    }),
-
-  completeMany: (ids) =>
-    set((state) => {
-      const newTodos = state.todos.map((t) =>
-        ids.includes(t.id) ? { ...t, completed: true } : t
-      );
-      saveTodos(newTodos);
-      return { todos: newTodos, selectedIds: [] };
-    }),
-
-  setFilter: (filter) => set({ filter }),
-
-  setSelectedIds: (ids) => set({ selectedIds: ids }),
-  toggleSelect: (id, checked) =>
-    set((state) => ({
-      selectedIds: checked
-        ? [...state.selectedIds, id]
-        : state.selectedIds.filter((i) => i !== id),
-    })),
-
-  setEditing: (todo) => set({ editing: todo }),
-}));
+    {
+      name: "todos",
+    }
+  )
+);
