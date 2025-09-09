@@ -15,13 +15,13 @@ interface TodoState {
   filter: "all" | "completed" | "active";
   selectedIds: number[];
   editing: {
-      deadline: string | null;
-      priority: "Low" | "Medium" | "High" | "Critical"; id: number; text: string 
-} | null;
+    deadline: string | null;
+    priority: "Low" | "Medium" | "High" | "Critical"; id: number; text: string
+  } | null;
   search: string;
 
   setSearch: (val: string) => void;
-  addTodo: (text: string) => void;
+  addTodo: (text: string, deadline: string | null, priority: "Low" | "Medium" | "High" | "Critical") => void;
   toggleTodo: (id: number) => void;
   deleteTodo: (id: number) => void;
   editTodo: (id: number, text: string, deadline: string | null, priority: "Low" | "Medium" | "High" | "Critical") => void;
@@ -31,7 +31,15 @@ interface TodoState {
 
   setSelectedIds: (ids: number[]) => void;
   toggleSelect: (id: number, checked: boolean) => void;
-  setEditing: (todo: { id: number; text: string } | null) => void;
+  setEditing: (
+    todo: {
+      id: number;
+      text: string;
+      deadline: string | null;
+      priority: "Low" | "Medium" | "High" | "Critical";
+    } | null
+  ) => void;
+
   checkExpired: () => void;
 }
 
@@ -45,7 +53,11 @@ export const useTodoStore = create<TodoState>()(
       search: "",
       setSearch: (val) => set({ search: val }),
 
-      addTodo: (text, deadline = null, priority: "Low" | "Medium" | "High" | "Critical" = "Medium") =>
+      addTodo: (
+        text: string,
+        deadline: string | null = null,
+        priority: "Low" | "Medium" | "High" | "Critical" = "Medium"
+      ) =>
         set((state) => ({
           todos: [
             ...state.todos,
