@@ -1,10 +1,11 @@
 import React from "react";
-import { Modal, Input, notification, DatePicker, Select } from "antd";
+import { Modal, Input, DatePicker, Select } from "antd";
 import { useTodoStore } from "@/stores/todoStore";
 import dayjs from "dayjs";
+import { NotificationInstance } from "antd/es/notification/interface";
 
 interface EditModalProps {
-  notify: typeof notification;
+  notify: NotificationInstance;
 }
 
 export default function EditModal({ notify }: EditModalProps) {

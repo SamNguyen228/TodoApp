@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, notification, Popconfirm } from "antd";
+import { Table, Button, Popconfirm } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useTodoStore, type Todo } from "@/stores/todoStore";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
+import { NotificationInstance } from "antd/es/notification/interface";
 
 interface ListTodoProps {
-    notify: typeof notification;
+    notify: NotificationInstance;
 }
 
 export default function ListTodo({ notify }: ListTodoProps) {

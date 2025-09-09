@@ -1,11 +1,12 @@
-import { Input, Button, notification, DatePicker, Select } from "antd";
+import { Input, Button, DatePicker, Select } from "antd";
 import dayjs from "dayjs";
 import { useTodoStore } from "@/stores/todoStore";
 import { PlusCircleTwoTone } from "@ant-design/icons";
 import React, { useState } from "react";
+import { NotificationInstance } from "antd/es/notification/interface";
 
 interface InputAddProps {
-  notify: typeof notification;
+  notify: NotificationInstance;
 }
 
 const { Option } = Select;
