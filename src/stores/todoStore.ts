@@ -1,22 +1,30 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 export interface Todo {
   id: number;
   text: string;
   completed: boolean;
+  createdAt: string;
+  deadline?: string | null;
+  priority: "Low" | "Medium" | "High" | "Critical";
 }
 
 interface TodoState {
   todos: Todo[];
   filter: "all" | "completed" | "active";
   selectedIds: number[];
-  editing: { id: number; text: string } | null;
+  editing: {
+      deadline: string | null;
+      priority: "Low" | "Medium" | "High" | "Critical"; id: number; text: string 
+} | null;
+  search: string;
 
+  setSearch: (val: string) => void;
   addTodo: (text: string) => void;
   toggleTodo: (id: number) => void;
   deleteTodo: (id: number) => void;
-  editTodo: (id: number, text: string) => void;
+  editTodo: (id: number, text: string, deadline: string | null, priority: "Low" | "Medium" | "High" | "Critical") => void;
   deleteMany: (ids: number[]) => void;
   completeMany: (ids: number[]) => void;
   setFilter: (filter: "all" | "completed" | "active") => void;
@@ -24,6 +32,7 @@ interface TodoState {
   setSelectedIds: (ids: number[]) => void;
   toggleSelect: (id: number, checked: boolean) => void;
   setEditing: (todo: { id: number; text: string } | null) => void;
+  checkExpired: () => void;
 }
 
 export const useTodoStore = create<TodoState>()(
@@ -33,16 +42,30 @@ export const useTodoStore = create<TodoState>()(
       filter: "all",
       selectedIds: [],
       editing: null,
+      search: "",
+      setSearch: (val) => set({ search: val }),
 
-      addTodo: (text) =>
+      addTodo: (text, deadline = null, priority: "Low" | "Medium" | "High" | "Critical" = "Medium") =>
         set((state) => ({
-          todos: [...state.todos, { id: Date.now(), text, completed: false }],
+          todos: [
+            ...state.todos,
+            {
+              id: Date.now(),
+              text,
+              completed: false,
+              createdAt: new Date().toISOString(),
+              deadline,
+              priority,
+            },
+          ],
         })),
 
       toggleTodo: (id) =>
         set((state) => ({
           todos: state.todos.map((todo) =>
-            todo.id === id ? { ...todo, completed: !todo.completed } : todo
+            todo.id === id
+              ? { ...todo, completed: !todo.completed }
+              : todo
           ),
         })),
 
@@ -51,10 +74,12 @@ export const useTodoStore = create<TodoState>()(
           todos: state.todos.filter((todo) => todo.id !== id),
         })),
 
-      editTodo: (id, text) =>
+      editTodo: (id, text, deadline, priority) =>
         set((state) => ({
           todos: state.todos.map((todo) =>
-            todo.id === id ? { ...todo, text } : todo
+            todo.id === id
+              ? { ...todo, text, deadline, priority }
+              : todo
           ),
         })),
 
@@ -83,6 +108,20 @@ export const useTodoStore = create<TodoState>()(
         })),
 
       setEditing: (todo) => set({ editing: todo }),
+
+      checkExpired: () =>
+        set((state) => ({
+          todos: state.todos.map((todo) => {
+            if (
+              todo.deadline &&
+              !todo.completed &&
+              new Date(todo.deadline).getTime() < Date.now()
+            ) {
+              return { ...todo, completed: true };
+            }
+            return todo;
+          }),
+        })),
     }),
     {
       name: "todos",

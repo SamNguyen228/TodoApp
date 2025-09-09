@@ -9,15 +9,15 @@ export default function Filter() {
     // eslint-disable-next-line react-hooks/rules-of-hooks
   } = useTodoStore();
   return (
-    <div className="mb-4">
+    <div className="mb-4 w-full">
       <Select
         value={filter}
         onChange={(val) => setFilter(val)}
         className="w-full"
         options={[
-          { value: "all", label: "Tất cả" },
-          { value: "active", label: "Chưa hoàn thành" },
-          { value: "completed", label: "Đã hoàn thành" },
+          { value: "all", label: "All" },
+          { value: "active", label: "Incomplete" },
+          { value: "completed", label: "Completed" },
         ]}
       />
     </div>

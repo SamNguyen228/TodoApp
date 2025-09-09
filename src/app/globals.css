@@ -38,12 +38,12 @@ body {
 .icon.icon1 {
   position: absolute;
   top: 280px;
-  right: -20px;
+  right: -50px;
 }
 
 .icon.icon2 {
   position: absolute;
-  left: -600px;
+  right: 800px;
 }
 
 .icon.icon3 {

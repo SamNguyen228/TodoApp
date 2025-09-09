@@ -1,18 +1,33 @@
-import React, { useState } from "react";
-import { Input, Button } from "antd";
+import { Input, Button, notification, DatePicker, Select } from "antd";
+import dayjs from "dayjs";
 import { useTodoStore } from "@/stores/todoStore";
 import { PlusCircleTwoTone } from "@ant-design/icons";
+import React, { useState } from "react";
 
-export default function InputAdd() {
-  const {
-    addTodo,
-  } = useTodoStore();
+interface InputAddProps {
+  notify: typeof notification;
+}
 
+const { Option } = Select;
+
+export default function InputAdd({ notify }: InputAddProps) {
+  const { addTodo } = useTodoStore();
   const [newTodo, setNewTodo] = useState("");
+  const [priority, setPriority] = useState<"Low" | "Medium" | "High" | "Critical">("Medium");
+  const [deadline, setDeadline] = useState<dayjs.Dayjs | null>(null);
+
   const handleAdd = () => {
-    if (!newTodo.trim()) return alert("Vui lòng nhập công việc!");
-    addTodo(newTodo);
+    if (!newTodo.trim()) {
+      notify.warning({
+        message: "Warning",
+        description: "Please fill your task!",
+      });
+      return;
+    }
+    addTodo(newTodo, deadline ? deadline.toISOString() : null, priority);
     setNewTodo("");
+    setDeadline(null);
+    setPriority("Medium");
   };
 
   return (
@@ -20,11 +35,32 @@ export default function InputAdd() {
       <Input
         value={newTodo}
         onChange={(e) => setNewTodo(e.target.value)}
-        placeholder="Nhập công việc..."
+        placeholder="Add new task..."
         onPressEnter={handleAdd}
         autoFocus
       />
-      <Button color="blue" variant="solid" onClick={handleAdd} icon={<PlusCircleTwoTone />}  className="hover:scale-125"></Button>
+      <DatePicker
+        value={deadline}
+        onChange={(value) => setDeadline(value)}
+        showTime
+        format="DD-MM-YYYY HH:mm"
+        placeholder="Deadline"
+        className="w-100"
+      />
+      <Select value={priority} onChange={(val) => setPriority(val)} style={{ width: 240 }}>
+        <Option value="Low">Low</Option>
+        <Option value="Medium">Medium</Option>
+        <Option value="High">High</Option>
+        <Option value="Critical">Critical</Option>
+      </Select>
+      <Button
+        color="blue"
+        variant="solid"
+        onClick={handleAdd}
+        icon={<PlusCircleTwoTone />}
+        className="hover:scale-115"
+      >Add</Button>
     </div>
   );
 }
+

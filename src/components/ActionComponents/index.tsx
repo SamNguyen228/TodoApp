@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Popconfirm, NotificationInstance } from "antd";
 import { useTodoStore } from "@/stores/todoStore";
+import { CheckOutlined, DeleteOutlined } from "@ant-design/icons";
 
 interface ActionProps {
   notify: NotificationInstance;
@@ -16,16 +17,16 @@ export default function Action({ notify }: ActionProps) {
   const handleComplete = () => {
     completeMany(selectedIds);
     notify.success({
-      message: "Thành công",
-      description: "Đã đánh dấu hoàn thành công việc",
+      message: "Success",
+      description: "Selected tasks have been marked as completed",
     });
   };
 
   const handleDelete = () => {
     deleteMany(selectedIds);
-    notify.info({
-      message: "Đã xoá",
-      description: "Công việc đã được xoá khỏi danh sách",
+    notify.success({
+      message: "Deleted",
+      description: "Selected tasks have been removed from the list",
     });
   };
 
@@ -37,19 +38,26 @@ export default function Action({ notify }: ActionProps) {
         className="hover:scale-110"
         disabled={selectedIds.length === 0 || allSelectedCompleted}
         onClick={handleComplete}
+        icon={<CheckOutlined />}
       >
-        Hoàn thành
+        Complete
       </Button>
 
       <Popconfirm
-        title="Xác nhận xoá"
-        description={`Bạn có chắc muốn xoá ${selectedIds.length} công việc đã chọn không?`}
-        okText="Xoá"
-        cancelText="Hủy"
+        title="Confirm deletion"
+        description={`Are you sure you want to delete ${selectedIds.length} selected task(s)?`}
+        okText="Delete"
+        cancelText="Cancel"
         onConfirm={handleDelete}
       >
-        <Button color="red" variant="solid" className="hover:scale-110" disabled={selectedIds.length === 0}>
-          Xoá
+        <Button
+          color="red"
+          variant="solid"
+          className="hover:scale-110"
+          disabled={selectedIds.length === 0}
+          icon={<DeleteOutlined />}
+        >
+          Delete
         </Button>
       </Popconfirm>
     </div>
