@@ -1,5 +1,6 @@
 import React from "react";
-import { Button, Popconfirm, NotificationInstance } from "antd";
+import { Button, Popconfirm } from "antd";
+import type { NotificationInstance } from "antd/es/notification/interface";
 import { useTodoStore } from "@/stores/todoStore";
 
 interface ActionProps {
