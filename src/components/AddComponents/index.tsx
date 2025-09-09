@@ -25,6 +25,10 @@ export default function InputAdd({ notify }: InputAddProps) {
       });
       return;
     }
+    notify.success({
+      message: "Success",
+      description: "Task has been added successfully!",
+    });
     addTodo(newTodo, deadline ? deadline.toISOString() : null, priority);
     setNewTodo("");
     setDeadline(null);
