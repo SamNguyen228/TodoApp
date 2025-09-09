@@ -21,11 +21,11 @@ export default function EditModal({ notify }: EditModalProps) {
       setEditing(null);
       notify.success({
         message: "Success",
-        description: "Save task successful!",
+        description: "Update task successful!",
       });
     } else {
-      notify.info({
-        message: "Notice",
+      notify.warning({
+        message: "Warning",
         description: "Please fill your content!",
       });
     }
@@ -39,7 +39,6 @@ export default function EditModal({ notify }: EditModalProps) {
       onCancel={() => setEditing(null)}
       onOk={handleOk}
     >
-      {/* Tên công việc */}
       <div className="mb-3">
         <label className="block mb-1 font-medium">Task Name</label>
         <Input
@@ -53,7 +52,6 @@ export default function EditModal({ notify }: EditModalProps) {
         />
       </div>
 
-      {/* Deadline */}
       <div className="mb-3">
         <label className="block mb-1 font-medium">Deadline</label>
         <DatePicker
@@ -69,7 +67,6 @@ export default function EditModal({ notify }: EditModalProps) {
         />
       </div>
 
-      {/* Priority */}
       <div className="mb-3">
         <label className="block mb-1 font-medium">Priority</label>
         <Select

@@ -6,7 +6,6 @@ export default function Filter() {
   const {
     filter,
     setFilter,
-    // eslint-disable-next-line react-hooks/rules-of-hooks
   } = useTodoStore();
   return (
     <div className="mb-4 w-full">

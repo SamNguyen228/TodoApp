@@ -36,7 +36,7 @@ export default function ListTodo({ notify }: ListTodoProps) {
     const handleDelete = (id: number) => {
         deleteTodo(id);
         notify.success({
-            message: "Deleted",
+            message: "Success",
             description: "Task has been removed from the list",
         });
     };
@@ -51,7 +51,7 @@ export default function ListTodo({ notify }: ListTodoProps) {
     useEffect(() => {
         const timer = setInterval(() => {
             checkExpired();
-        }, 60 * 1000);
+        }, 30 * 1000);
         return () => clearInterval(timer);
     }, [checkExpired]);
 
