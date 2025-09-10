@@ -31,38 +31,56 @@ body {
 
 .icon {
   font-size: 50px;
-  opacity: 0.3;
-  animation: swing 3s linear infinite;
+  opacity: 0.5;
+  animation: swing 3s ease-in-out infinite;
 }
 
-.icon.icon1 {
+.icon1 {
   position: absolute;
   top: 280px;
-  right: -50px;
+  right: -70px;
+  animation-delay: 0s;
 }
 
-.icon.icon2 {
+.icon2 {
   position: absolute;
-  right: 800px;
+  right: 900px;
+  top: 50px;
+  animation-delay: 0.5s;
 }
 
-.icon.icon3 {
+.icon3 {
   position: absolute;
   bottom: 200px;
   left: 55px;
+  animation-delay: 1s;
+}
+
+.icon4 {
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  animation-delay: 1.5s;
+}
+
+.icon5 {
+  position: absolute;
+  bottom: 150px;
+  right: 850px;
+  animation-delay: 2s;
+}
+
+.icon6 {
+  position: absolute;
+  top: 250px;
+  left: -900px;
+  animation-delay: 2.5s;
 }
 
 @keyframes swing {
-  0% { transform: rotate(0deg); }
-  25% { transform: rotate(30deg); }
-  50% { transform: rotate(0deg); }
-  75% { transform: rotate(-30deg); }
-  100% { transform: rotate(0deg); }
+  0% { transform: rotate(0deg) translateY(0); }
+  25% { transform: rotate(15deg) translateY(-5px); }
+  50% { transform: rotate(0deg) translateY(0); }
+  75% { transform: rotate(-15deg) translateY(5px); }
+  100% { transform: rotate(0deg) translateY(0); }
 }
-
-
-
-
-
-
-

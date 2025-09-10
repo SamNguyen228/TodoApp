@@ -23,10 +23,10 @@ export default function App() {
 
   return (
     <>
-      <div className="min-h-screen bg-white flex items-center justify-center p-6">
+      <div className="min-h-screen bg-white flex items-center justify-center p-6 w-screen bg-gradient-to-br from-pink-300 via-white to-blue-300">
         {contextHolder}
         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-6">
-          <h1 className="text-2xl font-bold mb-4 text-center text-red-400">
+          <h1 className="text-4xl font-bold mb-4 text-center text-red-400 animate-bounce">
             Todo App
           </h1>
 

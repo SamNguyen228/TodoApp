@@ -93,22 +93,25 @@ export default function ListTodo({ notify }: ListTodoProps) {
                 const db = b.deadline ? new Date(b.deadline).getTime() : Infinity;
                 return da - db;
             },
-            render: (date: string) =>
-                date ? (
-                    <div
-                        className={`flex flex-col items-center ${new Date(date).getTime() < Date.now()
-                                ? "text-red-500 font-bold"
-                                : ""
-                            }`}
-                    >
+            render: (date: string, record) => {
+                if (!date) return <span className="text-gray-400">No deadline</span>;
+
+                const deadlinePassed = new Date(date).getTime() < Date.now();
+
+                let style = "";
+                if (record.completed && !record.expired) {
+                    style = "text-gray-400";
+                } else if (deadlinePassed) {
+                    style = "text-red-500 font-bold";
+                }
+
+                return (
+                    <div className={`flex flex-col items-center ${style}`}>
                         <span>{dayjs(date).format("DD/MM/YYYY")}</span>
-                        <span className="text-xs ">
-                            {dayjs(date).format("HH:mm")}
-                        </span>
+                        <span className="text-xs">{dayjs(date).format("HH:mm")}</span>
                     </div>
-                ) : (
-                    <span className="text-gray-400">No deadline</span>
-                ),
+                );
+            },
         },
         {
             title: "PRIORITY",

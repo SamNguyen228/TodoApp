@@ -8,6 +8,7 @@ export interface Todo {
   createdAt: string;
   deadline?: string | null;
   priority: "Low" | "Medium" | "High" | "Critical";
+  expired?: boolean;
 }
 
 interface TodoState {
@@ -121,19 +122,20 @@ export const useTodoStore = create<TodoState>()(
 
       setEditing: (todo) => set({ editing: todo }),
 
-      checkExpired: () =>
-        set((state) => ({
+      checkExpired: () => set((state) => {
+        const now = Date.now();
+        return {
           todos: state.todos.map((todo) => {
             if (
               todo.deadline &&
-              !todo.completed &&
-              new Date(todo.deadline).getTime() < Date.now()
-            ) {
-              return { ...todo, completed: true };
+              new Date(todo.deadline).getTime() < now &&
+              !todo.completed) {
+              return { ...todo, completed: true, expired: true };
             }
             return todo;
           }),
-        })),
+        };
+      }),
     }),
     {
       name: "todos",
