@@ -1,22 +1,27 @@
 import React from "react";
 import { Modal, Input, DatePicker, Select } from "antd";
 import { useTodoStore } from "@/stores/todoStore";
-import dayjs from "dayjs";
-import { NotificationInstance } from "antd/es/notification/interface";
+import dayjs, { Dayjs } from "dayjs";
+import type { NotificationInstance } from "antd/es/notification/interface";
+import type { Priority } from "@/stores/todoStore";
 
 interface EditModalProps {
   notify: NotificationInstance;
 }
 
 export default function EditModal({ notify }: EditModalProps) {
-  const { 
-    editTodo, 
-    editing, 
-    setEditing 
-  } = useTodoStore();
+  const { editTodo, editing, setEditing } = useTodoStore();
 
   const handleOk = () => {
     if (editing && editing.text.trim()) {
+      if (editing.deadline && dayjs(editing.deadline).isBefore(dayjs())) {
+        notify.error({
+          message: "Error",
+          description: "Deadline is already overdue. Cannot update!",
+        });
+        return;
+      }
+
       editTodo(editing.id, editing.text, editing.deadline, editing.priority);
       setEditing(null);
       notify.success({
@@ -39,6 +44,7 @@ export default function EditModal({ notify }: EditModalProps) {
       onCancel={() => setEditing(null)}
       onOk={handleOk}
     >
+      {/* Task Name */}
       <div className="mb-3">
         <label className="block mb-1 font-medium">Task Name</label>
         <Input
@@ -52,24 +58,28 @@ export default function EditModal({ notify }: EditModalProps) {
         />
       </div>
 
+      {/* Deadline */}
       <div className="mb-3">
         <label className="block mb-1 font-medium">Deadline</label>
         <DatePicker
           showTime
           format="DD-MM-YYYY HH:mm"
           value={editing?.deadline ? dayjs(editing.deadline) : null}
-          onChange={(date) =>
+          onChange={(date: Dayjs | null) =>
             setEditing(
-              editing ? { ...editing, deadline: date?.toISOString() ?? null } : null
+              editing
+                ? { ...editing, deadline: date?.toISOString() ?? null }
+                : null
             )
           }
-          style={{ width: "100%" }}
+          className="w-full"
         />
       </div>
 
+      {/* Priority */}
       <div className="mb-3">
         <label className="block mb-1 font-medium">Priority</label>
-        <Select
+        <Select<Priority>
           value={editing?.priority || "Medium"}
           onChange={(val) =>
             setEditing(editing ? { ...editing, priority: val } : null)
@@ -80,7 +90,7 @@ export default function EditModal({ notify }: EditModalProps) {
             { value: "High", label: "High" },
             { value: "Critical", label: "Critical" },
           ]}
-          style={{ width: "100%" }}
+          className="w-full"
         />
       </div>
     </Modal>

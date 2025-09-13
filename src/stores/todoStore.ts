@@ -1,45 +1,44 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+export type Priority = "Low" | "Medium" | "High" | "Critical";
+
 export interface Todo {
   id: number;
   text: string;
   completed: boolean;
   createdAt: string;
   deadline?: string | null;
-  priority: "Low" | "Medium" | "High" | "Critical";
+  priority: Priority;
   expired?: boolean;
+}
+
+export interface EditingTodo {
+  id: number;
+  text: string;
+  deadline: string | null;
+  priority: Priority;
 }
 
 interface TodoState {
   todos: Todo[];
   filter: "all" | "completed" | "active";
   selectedIds: number[];
-  editing: {
-    deadline: string | null;
-    priority: "Low" | "Medium" | "High" | "Critical"; id: number; text: string
-  } | null;
+  editing: EditingTodo | null;
   search: string;
 
   setSearch: (val: string) => void;
-  addTodo: (text: string, deadline: string | null, priority: "Low" | "Medium" | "High" | "Critical") => void;
+  addTodo: (text: string, deadline: string | null, priority: Priority) => void;
   toggleTodo: (id: number) => void;
   deleteTodo: (id: number) => void;
-  editTodo: (id: number, text: string, deadline: string | null, priority: "Low" | "Medium" | "High" | "Critical") => void;
+  editTodo: (id: number, text: string, deadline: string | null, priority: Priority) => void;
   deleteMany: (ids: number[]) => void;
   completeMany: (ids: number[]) => void;
   setFilter: (filter: "all" | "completed" | "active") => void;
 
   setSelectedIds: (ids: number[]) => void;
   toggleSelect: (id: number, checked: boolean) => void;
-  setEditing: (
-    todo: {
-      id: number;
-      text: string;
-      deadline: string | null;
-      priority: "Low" | "Medium" | "High" | "Critical";
-    } | null
-  ) => void;
+  setEditing: (todo: EditingTodo | null) => void;
 
   checkExpired: () => void;
 }
@@ -52,13 +51,10 @@ export const useTodoStore = create<TodoState>()(
       selectedIds: [],
       editing: null,
       search: "",
+
       setSearch: (val) => set({ search: val }),
 
-      addTodo: (
-        text: string,
-        deadline: string | null = null,
-        priority: "Low" | "Medium" | "High" | "Critical" = "Medium"
-      ) =>
+      addTodo: (text, deadline = null, priority = "Medium") =>
         set((state) => ({
           todos: [
             ...state.todos,
@@ -76,9 +72,7 @@ export const useTodoStore = create<TodoState>()(
       toggleTodo: (id) =>
         set((state) => ({
           todos: state.todos.map((todo) =>
-            todo.id === id
-              ? { ...todo, completed: !todo.completed }
-              : todo
+            todo.id === id ? { ...todo, completed: !todo.completed } : todo
           ),
         })),
 
@@ -90,9 +84,7 @@ export const useTodoStore = create<TodoState>()(
       editTodo: (id, text, deadline, priority) =>
         set((state) => ({
           todos: state.todos.map((todo) =>
-            todo.id === id
-              ? { ...todo, text, deadline, priority }
-              : todo
+            todo.id === id ? { ...todo, text, deadline, priority } : todo
           ),
         })),
 
@@ -122,23 +114,23 @@ export const useTodoStore = create<TodoState>()(
 
       setEditing: (todo) => set({ editing: todo }),
 
-      checkExpired: () => set((state) => {
-        const now = Date.now();
-        return {
-          todos: state.todos.map((todo) => {
-            if (
-              todo.deadline &&
-              new Date(todo.deadline).getTime() < now &&
-              !todo.completed) {
-              return { ...todo, completed: true, expired: true };
-            }
-            return todo;
-          }),
-        };
-      }),
+      checkExpired: () =>
+        set((state) => {
+          const now = Date.now();
+          return {
+            todos: state.todos.map((todo) => {
+              if (
+                todo.deadline &&
+                new Date(todo.deadline).getTime() < now &&
+                !todo.completed
+              ) {
+                return { ...todo, expired: true };
+              }
+              return todo;
+            }),
+          };
+        }),
     }),
-    {
-      name: "todos",
-    }
+    { name: "todos" }
   )
 );

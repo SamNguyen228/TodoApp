@@ -1,6 +1,7 @@
 import { Input, Button, DatePicker, Select } from "antd";
+import type { SelectProps } from "antd";
 import dayjs from "dayjs";
-import { useTodoStore } from "@/stores/todoStore";
+import { useTodoStore, type Priority } from "@/stores/todoStore";
 import { PlusCircleTwoTone } from "@ant-design/icons";
 import React, { useState } from "react";
 import { NotificationInstance } from "antd/es/notification/interface";
@@ -9,12 +10,17 @@ interface InputAddProps {
   notify: NotificationInstance;
 }
 
-const { Option } = Select;
+const priorityOptions: SelectProps<Priority>["options"] = [
+  { value: "Low", label: "Low" },
+  { value: "Medium", label: "Medium" },
+  { value: "High", label: "High" },
+  { value: "Critical", label: <span className="text-red-500 font-semibold">Critical</span> },
+];
 
 export default function InputAdd({ notify }: InputAddProps) {
   const { addTodo } = useTodoStore();
   const [newTodo, setNewTodo] = useState("");
-  const [priority, setPriority] = useState<"Low" | "Medium" | "High" | "Critical">("Medium");
+  const [priority, setPriority] = useState<Priority>("Medium");
   const [deadline, setDeadline] = useState<dayjs.Dayjs | null>(null);
 
   const handleAdd = () => {
@@ -52,20 +58,21 @@ export default function InputAdd({ notify }: InputAddProps) {
         placeholder="Deadline"
         className="w-100"
       />
-      <Select value={priority} onChange={(val) => setPriority(val)} style={{ width: 240 }}>
-        <Option value="Low">Low</Option>
-        <Option value="Medium">Medium</Option>
-        <Option value="High">High</Option>
-        <Option value="Critical">Critical</Option>
-      </Select>
+      <Select
+        value={priority}
+        onChange={(val) => setPriority(val)}
+        options={priorityOptions}
+        style={{ width: 240 }}
+      />
       <Button
         color="blue"
         variant="solid"
         onClick={handleAdd}
         icon={<PlusCircleTwoTone />}
         className="hover:scale-115"
-      >Add</Button>
+      >
+        Add
+      </Button>
     </div>
   );
 }
-
