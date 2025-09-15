@@ -26,7 +26,7 @@ export default function EditModal({ notify }: EditModalProps) {
       setEditing(null);
       notify.success({
         message: "Success",
-        description: "Update task successful!",
+        description: "Update task successful!", 
       });
     } else {
       notify.warning({
