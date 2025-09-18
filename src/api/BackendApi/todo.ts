@@ -1,16 +1,6 @@
 import { Todo } from "@/stores/todoStore";
 import api from "./api"
 
-// api.interceptors.request.use((config) => {
-//   if (typeof window !== "undefined") {
-//     const token = localStorage.getItem("token");
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//   }
-//   return config;
-// });
-
 export const todoApi = {
   getTodos: async () => {
     const res = await api.get("/todos");

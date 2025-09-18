@@ -3,7 +3,6 @@ import { useState } from "react";
 import { login, register } from "@/api/BackendApi/auth";
 import { NotificationInstance } from "antd/es/notification/interface";
 import { Form, Input, Button, Typography, Card } from "antd";
-import { FaLock } from "react-icons/fa6";
 
 const { Title, Text } = Typography;
 

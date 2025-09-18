@@ -51,11 +51,6 @@ export const useTodoStore = create<TodoState>((set, get) => ({
   editing: null,
   search: "",
 
-  // loadTodos: async () => {
-  //   const todos = await todoApi.getTodos();
-  //   set({ todos });
-  // },
-
   loadTodos: async () => {
     const todosFromApi: Todo[] = await todoApi.getTodos();
 
@@ -125,44 +120,6 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     })),
 
   setEditing: (todo) => set({ editing: todo }),
-
-  // checkExpired: () =>
-  //   set((state) => {
-  //     const now = Date.now();
-  //     return {
-  //       todos: state.todos.map((todo) => {
-  //         if (
-  //           todo.deadline &&
-  //           new Date(todo.deadline).getTime() < now &&
-  //           !todo.completed
-  //         ) {
-  //           return { ...todo, expired: true };
-  //         }
-  //         return { ...todo, expired: false };
-  //       }),
-  //     };
-  //   }),
-
-  //   checkExpired: async () => {
-  //   const now = Date.now();
-  //   const todos = get().todos;
-
-  //   const updatedTodos = await Promise.all(
-  //     todos.map(async (todo) => {
-  //       if (todo.deadline && new Date(todo.deadline).getTime() < now && !todo.completed) {
-  //         // quá hạn → set completed + autoCompleted = true
-  //         const updated = await todoApi.updateTodo(todo.id, {
-  //           completed: true,
-  //           autoCompleted: true,
-  //         });
-  //         return { ...updated, expired: true };
-  //       }
-  //       return { ...todo, expired: false };
-  //     })
-  //   );
-
-  //   set({ todos: updatedTodos });
-  // },
 
   checkExpired: async () => {
     const updatedTodos: Todo[] = await todoApi.autoCompleteOverdue();

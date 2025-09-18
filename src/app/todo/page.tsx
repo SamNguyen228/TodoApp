@@ -11,7 +11,7 @@ import { notification } from "antd";
 import Icon from "@/components/Icon";
 import SearchTodo from "@/components/SearchBar";
 import { useTodoStore } from "@/stores/todoStore";
-import { FaReact, FaNodeJs, FaAngular } from "react-icons/fa";
+import { FaReact } from "react-icons/fa";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import VerticalCarouselBackground from "@/components/CarouselBackground";
@@ -32,10 +32,8 @@ export default function App() {
       <Header notify={api} />
 
       <div className="relative min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-pink-300 via-white to-blue-300 pt-20 overflow-hidden">
-        {/* 🔹 Background băng chuyền icon */}
         <VerticalCarouselBackground />
 
-        {/* Nội dung chính */}
         <div className="relative z-10 bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-6">
           <div className="flex items-center justify-center gap-4 text-red-400">
             <FaReact className="text-5xl reactIcon" />

@@ -101,15 +101,6 @@ export default function ListTodo({ notify }: ListTodoProps) {
         if (!date)
           return <span className="text-gray-400">No deadline</span>;
 
-        // const deadlinePassed = new Date(date).getTime() < Date.now();
-
-        // let style = "";
-        // if (record.completed && !record.expired) {
-        //   style = "text-gray-400";
-        // } else if (deadlinePassed) {
-        //   style = "text-red-500 font-bold";
-        // }
-
         const deadlinePassed = record.expired || record.autoCompleted;
 
         let style = "";
