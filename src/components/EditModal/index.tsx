@@ -13,7 +13,7 @@ export default function EditModal({ notify }: EditModalProps) {
   const { editTodo, editing, setEditing } = useTodoStore();
 
   const handleOk = () => {
-    if (editing && editing.text.trim()) {
+    if (editing && editing.title.trim()) {
       if (editing.deadline && dayjs(editing.deadline).isBefore(dayjs())) {
         notify.error({
           message: "Error",
@@ -22,7 +22,7 @@ export default function EditModal({ notify }: EditModalProps) {
         return;
       }
 
-      editTodo(editing.id, editing.text, editing.deadline, editing.priority);
+      editTodo(editing.id, editing.title, editing.deadline, editing.priority);
       setEditing(null);
       notify.success({
         message: "Success",
@@ -44,21 +44,19 @@ export default function EditModal({ notify }: EditModalProps) {
       onCancel={() => setEditing(null)}
       onOk={handleOk}
     >
-      {/* Task Name */}
       <div className="mb-3">
         <label className="block mb-1 font-medium">Task Name</label>
         <Input
-          value={editing?.text}
+          value={editing?.title}
           onChange={(e) =>
             setEditing(
-              editing ? { ...editing, text: e.target.value } : null
+              editing ? { ...editing, title: e.target.value } : null
             )
           }
           onPressEnter={handleOk}
         />
       </div>
 
-      {/* Deadline */}
       <div className="mb-3">
         <label className="block mb-1 font-medium">Deadline</label>
         <DatePicker
@@ -76,7 +74,6 @@ export default function EditModal({ notify }: EditModalProps) {
         />
       </div>
 
-      {/* Priority */}
       <div className="mb-3">
         <label className="block mb-1 font-medium">Priority</label>
         <Select<Priority>

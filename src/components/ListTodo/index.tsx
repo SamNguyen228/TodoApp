@@ -28,7 +28,7 @@ export default function ListTodo({ notify }: ListTodoProps) {
   const filteredTodos = todos.filter((todo) => {
     if (filter === "completed" && !todo.completed) return false;
     if (filter === "active" && todo.completed) return false;
-    if (search && !todo.text.toLowerCase().includes(search.toLowerCase()))
+    if (search && !todo.title.toLowerCase().includes(search.toLowerCase()))
       return false;
     return true;
   });
@@ -55,10 +55,14 @@ export default function ListTodo({ notify }: ListTodoProps) {
     return () => clearInterval(timer);
   }, [checkExpired]);
 
+  useEffect(() => {
+    useTodoStore.getState().loadTodos();
+  }, []);
+
   const columns: ColumnsType<Todo> = [
     {
       title: "TASK",
-      dataIndex: "text",
+      dataIndex: "title",
       align: "center",
       render: (text: string, record: Todo) => (
         <span
@@ -97,10 +101,19 @@ export default function ListTodo({ notify }: ListTodoProps) {
         if (!date)
           return <span className="text-gray-400">No deadline</span>;
 
-        const deadlinePassed = new Date(date).getTime() < Date.now();
+        // const deadlinePassed = new Date(date).getTime() < Date.now();
+
+        // let style = "";
+        // if (record.completed && !record.expired) {
+        //   style = "text-gray-400";
+        // } else if (deadlinePassed) {
+        //   style = "text-red-500 font-bold";
+        // }
+
+        const deadlinePassed = record.expired || record.autoCompleted;
 
         let style = "";
-        if (record.completed && !record.expired) {
+        if (record.completed && !record.expired && !record.autoCompleted) {
           style = "text-gray-400";
         } else if (deadlinePassed) {
           style = "text-red-500 font-bold";
@@ -149,7 +162,7 @@ export default function ListTodo({ notify }: ListTodoProps) {
             onClick={() =>
               setEditing({
                 id: record.id,
-                text: record.text,
+                title: record.title,
                 deadline: record.deadline || null,
                 priority: record.priority,
               })
@@ -173,7 +186,7 @@ export default function ListTodo({ notify }: ListTodoProps) {
   ];
 
   const rowSelection = {
-    selectedRowKeys: selectedIds as number[], 
+    selectedRowKeys: selectedIds as number[],
     onChange: (selectedRowKeys: React.Key[]) => {
       setSelectedIds(selectedRowKeys as number[]);
     },

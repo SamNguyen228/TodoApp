@@ -1,13 +1,15 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { todoApi } from "@/api/BackendApi/todo";
 
 export type Priority = "Low" | "Medium" | "High" | "Critical";
 
 export interface Todo {
   id: number;
-  text: string;
+  title: string;
   completed: boolean;
+  autoCompleted: boolean;
   createdAt: string;
+  updateAt: string;
   deadline?: string | null;
   priority: Priority;
   expired?: boolean;
@@ -15,7 +17,7 @@ export interface Todo {
 
 export interface EditingTodo {
   id: number;
-  text: string;
+  title: string;
   deadline: string | null;
   priority: Priority;
 }
@@ -27,110 +29,166 @@ interface TodoState {
   editing: EditingTodo | null;
   search: string;
 
+  loadTodos: () => Promise<void>;
   setSearch: (val: string) => void;
-  addTodo: (text: string, deadline: string | null, priority: Priority) => void;
-  toggleTodo: (id: number) => void;
-  deleteTodo: (id: number) => void;
-  editTodo: (id: number, text: string, deadline: string | null, priority: Priority) => void;
-  deleteMany: (ids: number[]) => void;
-  completeMany: (ids: number[]) => void;
+  addTodo: (title: string, deadline: string | null, priority: Priority) => Promise<void>;
+  toggleTodo: (id: number) => Promise<void>;
+  deleteTodo: (id: number) => Promise<void>;
+  editTodo: (id: number, title: string, deadline: string | null, priority: Priority) => Promise<void>;
+  deleteMany: (ids: number[]) => Promise<void>;
+  completeMany: (ids: number[]) => Promise<void>;
   setFilter: (filter: "all" | "completed" | "active") => void;
-
   setSelectedIds: (ids: number[]) => void;
   toggleSelect: (id: number, checked: boolean) => void;
   setEditing: (todo: EditingTodo | null) => void;
-
   checkExpired: () => void;
 }
 
-export const useTodoStore = create<TodoState>()(
-  persist(
-    (set) => ({
-      todos: [],
-      filter: "all",
+export const useTodoStore = create<TodoState>((set, get) => ({
+  todos: [],
+  filter: "all",
+  selectedIds: [],
+  editing: null,
+  search: "",
+
+  // loadTodos: async () => {
+  //   const todos = await todoApi.getTodos();
+  //   set({ todos });
+  // },
+
+  loadTodos: async () => {
+    const todosFromApi: Todo[] = await todoApi.getTodos();
+
+    const todosWithExpired: Todo[] = todosFromApi.map((todo) => ({
+      ...todo,
+      expired: todo.autoCompleted ?? false,
+    }));
+
+    set({ todos: todosWithExpired });
+  },
+
+  setSearch: (val) => set({ search: val }),
+
+  addTodo: async (title, deadline = null, priority = "Medium") => {
+    const newTodo = await todoApi.createTodo(title, deadline, priority);
+    set((state) => ({ todos: [...state.todos, newTodo] }));
+  },
+
+  toggleTodo: async (id) => {
+    const todo = get().todos.find((t) => t.id === id);
+    if (!todo) return;
+    const updated = await todoApi.updateTodo(id, { completed: !todo.completed });
+    set((state) => ({
+      todos: state.todos.map((t) => (t.id === id ? updated : t)),
+    }));
+  },
+
+  deleteTodo: async (id) => {
+    await todoApi.deleteTodo(id);
+    set((state) => ({ todos: state.todos.filter((t) => t.id !== id) }));
+  },
+
+  editTodo: async (id, title, deadline, priority) => {
+    const updated = await todoApi.updateTodo(id, { title, deadline, priority });
+    set((state) => ({
+      todos: state.todos.map((t) => (t.id === id ? updated : t)),
+    }));
+  },
+
+  deleteMany: async (ids) => {
+    await Promise.all(ids.map((id) => todoApi.deleteTodo(id)));
+    set((state) => ({
+      todos: state.todos.filter((t) => !ids.includes(t.id)),
       selectedIds: [],
-      editing: null,
-      search: "",
+    }));
+  },
 
-      setSearch: (val) => set({ search: val }),
+  completeMany: async (ids) => {
+    await Promise.all(ids.map((id) => todoApi.updateTodo(id, { completed: true })));
+    set((state) => ({
+      todos: state.todos.map((t) =>
+        ids.includes(t.id) ? { ...t, completed: true } : t
+      ),
+      selectedIds: [],
+    }));
+  },
 
-      addTodo: (text, deadline = null, priority = "Medium") =>
-        set((state) => ({
-          todos: [
-            ...state.todos,
-            {
-              id: Date.now(),
-              text,
-              completed: false,
-              createdAt: new Date().toISOString(),
-              deadline,
-              priority,
-            },
-          ],
-        })),
+  setFilter: (filter) => set({ filter }),
 
-      toggleTodo: (id) =>
-        set((state) => ({
-          todos: state.todos.map((todo) =>
-            todo.id === id ? { ...todo, completed: !todo.completed } : todo
-          ),
-        })),
+  setSelectedIds: (ids) => set({ selectedIds: ids }),
 
-      deleteTodo: (id) =>
-        set((state) => ({
-          todos: state.todos.filter((todo) => todo.id !== id),
-        })),
+  toggleSelect: (id, checked) =>
+    set((state) => ({
+      selectedIds: checked
+        ? [...state.selectedIds, id]
+        : state.selectedIds.filter((i) => i !== id),
+    })),
 
-      editTodo: (id, text, deadline, priority) =>
-        set((state) => ({
-          todos: state.todos.map((todo) =>
-            todo.id === id ? { ...todo, text, deadline, priority } : todo
-          ),
-        })),
+  setEditing: (todo) => set({ editing: todo }),
 
-      deleteMany: (ids) =>
-        set((state) => ({
-          todos: state.todos.filter((t) => !ids.includes(t.id)),
-          selectedIds: [],
-        })),
+  // checkExpired: () =>
+  //   set((state) => {
+  //     const now = Date.now();
+  //     return {
+  //       todos: state.todos.map((todo) => {
+  //         if (
+  //           todo.deadline &&
+  //           new Date(todo.deadline).getTime() < now &&
+  //           !todo.completed
+  //         ) {
+  //           return { ...todo, expired: true };
+  //         }
+  //         return { ...todo, expired: false };
+  //       }),
+  //     };
+  //   }),
 
-      completeMany: (ids) =>
-        set((state) => ({
-          todos: state.todos.map((t) =>
-            ids.includes(t.id) ? { ...t, completed: true } : t
-          ),
-          selectedIds: [],
-        })),
+  //   checkExpired: async () => {
+  //   const now = Date.now();
+  //   const todos = get().todos;
 
-      setFilter: (filter) => set({ filter }),
+  //   const updatedTodos = await Promise.all(
+  //     todos.map(async (todo) => {
+  //       if (todo.deadline && new Date(todo.deadline).getTime() < now && !todo.completed) {
+  //         // quá hạn → set completed + autoCompleted = true
+  //         const updated = await todoApi.updateTodo(todo.id, {
+  //           completed: true,
+  //           autoCompleted: true,
+  //         });
+  //         return { ...updated, expired: true };
+  //       }
+  //       return { ...todo, expired: false };
+  //     })
+  //   );
 
-      setSelectedIds: (ids) => set({ selectedIds: ids }),
-      toggleSelect: (id, checked) =>
-        set((state) => ({
-          selectedIds: checked
-            ? [...state.selectedIds, id]
-            : state.selectedIds.filter((i) => i !== id),
-        })),
+  //   set({ todos: updatedTodos });
+  // },
 
-      setEditing: (todo) => set({ editing: todo }),
+  checkExpired: async () => {
+    const updatedTodos: Todo[] = await todoApi.autoCompleteOverdue();
+    const now = Date.now();
 
-      checkExpired: () =>
-        set((state) => {
-          const now = Date.now();
-          return {
-            todos: state.todos.map((todo) => {
-              if (
-                todo.deadline &&
-                new Date(todo.deadline).getTime() < now &&
-                !todo.completed
-              ) {
-                return { ...todo, expired: true };
-              }
-              return todo;
-            }),
-          };
-        }),
-    }),
-    { name: "todos" }
-  )
-);
+    set((state) => {
+      const updatedMap: Record<number, Todo> = Object.fromEntries(
+        updatedTodos.map((t) => [t.id, t])
+      );
+
+      const merged: Todo[] = state.todos.map((todo) => {
+        const updated = updatedMap[todo.id];
+        const completed = updated?.completed ?? todo.completed;
+        const autoCompleted = updated?.autoCompleted ?? todo.autoCompleted;
+
+        return {
+          ...todo,
+          completed,
+          autoCompleted,
+          expired: todo.deadline
+            ? new Date(todo.deadline).getTime() < now && !completed
+            : false,
+        };
+      });
+
+      return { todos: merged };
+    });
+  },
+}));

@@ -9,10 +9,6 @@ export const fetchLocation = async (
     try {
         // Case 1: Address → Coordinates
         if ("address" in params) {
-            if (!GOONG_API_KEY) {
-                throw new Error("Missing GOONG API key!");
-            }
-
             const res = await axios.get("https://rsapi.goong.io/geocode", {
                 params: { address: params.address, api_key: GOONG_API_KEY },
             });

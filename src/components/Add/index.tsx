@@ -22,8 +22,9 @@ export default function InputAdd({ notify }: InputAddProps) {
   const [newTodo, setNewTodo] = useState("");
   const [priority, setPriority] = useState<Priority>("Medium");
   const [deadline, setDeadline] = useState<dayjs.Dayjs | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!newTodo.trim()) {
       notify.warning({
         message: "Warning",
@@ -31,14 +32,35 @@ export default function InputAdd({ notify }: InputAddProps) {
       });
       return;
     }
-    notify.success({
-      message: "Success",
-      description: "Task has been added successfully!",
-    });
-    addTodo(newTodo, deadline ? deadline.toISOString() : null, priority);
-    setNewTodo("");
-    setDeadline(null);
-    setPriority("Medium");
+
+    try {
+      setLoading(true);
+      await addTodo(newTodo, deadline ? deadline.toISOString() : null, priority);
+
+      notify.success({
+        message: "Success",
+        description: "Task has been added successfully!",
+      });
+
+      setNewTodo("");
+      setDeadline(null);
+      setPriority("Medium");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        notify.error({
+          message: "Error",
+          description: err.message,
+        });
+      } else {
+        notify.error({
+          message: "Error",
+          description: "Failed to add task!",
+        });
+      }
+    }
+    finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,11 +87,11 @@ export default function InputAdd({ notify }: InputAddProps) {
         style={{ width: 240 }}
       />
       <Button
-        color="blue"
-        variant="solid"
+        type="primary"
         onClick={handleAdd}
         icon={<PlusCircleTwoTone />}
-        className="hover:scale-115"
+        loading={loading}
+        className="hover:scale-105"
       >
         Add
       </Button>

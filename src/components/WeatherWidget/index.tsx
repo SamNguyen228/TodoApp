@@ -8,8 +8,9 @@ import { IoIosWater } from "react-icons/io";
 import { FaLocationDot, FaTemperatureHalf } from "react-icons/fa6";
 import { NotificationInstance } from "antd/es/notification/interface";
 import { TiWeatherPartlySunny } from "react-icons/ti";
-import { bgImage } from "@/custom/backgroundTransiton"
+import { bgImage } from "@/custom/backgroundTransiton";
 import { MdMyLocation } from "react-icons/md";
+import LocationCascader from "../LocationCascader";
 
 interface WeatherProps {
   notify: NotificationInstance;
@@ -25,13 +26,16 @@ export default function WeatherWidget({ notify }: WeatherProps) {
     const interval = setInterval(() => {
       const now = new Date();
       setTime(
-        now.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit", second: "2-digit" })
+        now.toLocaleTimeString("vi-VN", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        })
       );
     }, 1000);
     return () => clearInterval(interval);
   }, []);
 
-  // Get GPS coords
   useEffect(() => {
     getLocation();
   }, []);
@@ -42,7 +46,6 @@ export default function WeatherWidget({ notify }: WeatherProps) {
         async (pos) => {
           const { latitude, longitude } = pos.coords;
           setCoords({ lat: latitude, lon: longitude });
-
           try {
             const addrRes = await fetchLocation({ lat: latitude, lon: longitude });
             setDisplayName(addrRes.formattedAddress);
@@ -55,7 +58,7 @@ export default function WeatherWidget({ notify }: WeatherProps) {
         }
       );
     }
-  }
+  };
 
   const { data: weatherData, isLoading } = useQuery({
     queryKey: ["weather", coords],
@@ -70,11 +73,10 @@ export default function WeatherWidget({ notify }: WeatherProps) {
       setDisplayName(res.formattedAddress);
     },
     onError: () => {
-      console.error("Address not found!");
       notify.error({
         message: "Error",
         description: "Address not found!",
-      })
+      });
     },
   });
 
@@ -92,12 +94,12 @@ export default function WeatherWidget({ notify }: WeatherProps) {
 
   return (
     <div className="flex justify-center mt-6 mb-6">
-      <Card className="w-full max-w-3xl rounded-2xl p-4 weather"
-        style={{
-          backgroundImage: bgImage(),
-        }}>
-        <div className="flex items-center gap-2 mb-6">
-          <div className="flex items-center gap-2 w-full text-cyan-300">
+      <Card
+        className="w-full max-w-4xl rounded-2xl p-4 weather"
+        style={{ backgroundImage: bgImage() }}
+      >
+        <div className="flex flex-wrap justify-center items-center gap-2 mb-6">
+          <div className="flex items-center gap-2 w-full text-cyan-300 justify-center mb-4">
             <TiWeatherPartlySunny className="text-3xl" />
             <h2 className="font-bold text-xl">Weather Widget</h2>
           </div>
@@ -107,26 +109,29 @@ export default function WeatherWidget({ notify }: WeatherProps) {
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             onPressEnter={handleSearch}
-            className="rounded-xl"
+            className="rounded-xl max-w-[200px]"
           />
 
           <Button
-            type="primary"     
-            size="middle"
-            shape="round"       
+            type="primary"
+            shape="round"
             onClick={handleSearch}
             loading={geocodeMutation.isPending}
-            icon={<FaSearchLocation className="!text-red-400 hover:scale-150 transition-all delay-75" />}
-            className="!bg-white hover:bg-blue-600 border-none scale-110"
+            icon={<FaSearchLocation className="!text-red-500 hover:scale-150"/>}
+            className="!bg-white hover:bg-blue-600 border-none"
           />
 
-          <Button 
+          <LocationCascader
+            notify={notify}
+            onSelect={(fullAddress) => geocodeMutation.mutate(fullAddress)}
+          />
+
+          <Button
             type="primary"
-            size="middle"
             shape="round"
             onClick={getLocation}
-            icon={<MdMyLocation className="!text-red-400 hover:scale-150 transition-all delay-75" />}
-            className="!bg-white hover:bg-blue-600 border-none scale-110" 
+            icon={<MdMyLocation className="!text-red-500 hover:scale-150"/>}
+            className="!bg-white hover:bg-blue-600 border-none"
           />
         </div>
 
@@ -135,7 +140,7 @@ export default function WeatherWidget({ notify }: WeatherProps) {
             <Spin size="large" />
           </div>
         ) : weatherData ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center bg-white/5 backdrop-blur-xs p-4 rounded-2xl">
             <div className="flex flex-col items-center justify-center">
               <Image
                 alt="icon"
@@ -146,36 +151,34 @@ export default function WeatherWidget({ notify }: WeatherProps) {
               <p className="text-4xl font-bold mt-2">
                 {Math.round(weatherData.main.temp)}°C
               </p>
-              <p className="capitalize text-shadow-white text-lg">
-                {weatherData.weather[0].description}
-              </p>
+              <p className="capitalize text-lg">{weatherData.weather[0].description}</p>
             </div>
-
             <div className="flex flex-col items-center sm:items-start text-white font-bold">
               <div className="flex items-center mb-2 gap-2">
                 <FaLocationDot className="text-2xl text-red-500 animate-bounce" />
-                <p className="text-yellow-400 font-bold text-xl">{displayName || "Get your location..."}</p>
+                <p className="text-yellow-400 font-bold text-base">
+                  {displayName || "Get your location..."}
+                </p>
               </div>
-              <div className="flex items-center gap-2 text-lg">
+              <div className="flex items-center gap-2 text-base">
                 <FaClock className="text-green-500" />
-                <p className="text-white font-mono mt-1">{time || "Get local time..."}</p>
+                <p className="text-white font-mono mt-1">
+                  {time || "Get local time..."}
+                </p>
               </div>
-              <div className="mt-3 space-y-2 text-lg">
+              <div className="mt-3 space-y-2 text-base">
                 <div className="flex items-center gap-2">
                   <FaWind className="text-blue-500" />
                   <span>{weatherData.wind.speed} m/s</span>
                 </div>
-
                 <div className="flex items-center gap-2">
                   <IoIosWater className="text-cyan-500" />
                   <span>{weatherData.main.humidity}%</span>
                 </div>
-
                 <div className="flex items-center gap-2">
                   <FaTemperatureHalf className="text-red-500" />
                   <span>~{Math.round(weatherData.main.feels_like)}°C</span>
                 </div>
-
                 <div className="flex items-center gap-2">
                   <FaArrowAltCircleDown className="text-blue-600" />
                   <span>{Math.round(weatherData.main.temp_min)}°C</span>
