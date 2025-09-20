@@ -24,7 +24,7 @@ export interface EditingTodo {
 
 interface TodoState {
   todos: Todo[];
-  filter: "all" | "completed" | "active";
+  filter: "all" | "completed" | "active" | "expired";
   selectedIds: number[];
   editing: EditingTodo | null;
   search: string;
@@ -37,7 +37,7 @@ interface TodoState {
   editTodo: (id: number, title: string, deadline: string | null, priority: Priority) => Promise<void>;
   deleteMany: (ids: number[]) => Promise<void>;
   completeMany: (ids: number[]) => Promise<void>;
-  setFilter: (filter: "all" | "completed" | "active") => void;
+  setFilter: (filter: "all" | "completed" | "active" | "expired") => void;
   setSelectedIds: (ids: number[]) => void;
   toggleSelect: (id: number, checked: boolean) => void;
   setEditing: (todo: EditingTodo | null) => void;

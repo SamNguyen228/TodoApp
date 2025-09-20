@@ -28,6 +28,7 @@ export default function ListTodo({ notify }: ListTodoProps) {
   const filteredTodos = todos.filter((todo) => {
     if (filter === "completed" && !todo.completed) return false;
     if (filter === "active" && todo.completed) return false;
+    if (filter === "expired" && !todo.expired) return false;
     if (search && !todo.title.toLowerCase().includes(search.toLowerCase()))
       return false;
     return true;

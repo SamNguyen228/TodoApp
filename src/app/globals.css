@@ -26,58 +26,6 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.effectIcon {
-  position: relative;
-}
-
-.icon {
-  font-size: 50px;
-  opacity: 0.5;
-  animation: swing 3s ease-in-out infinite;
-}
-
-.icon1 {
-  position: absolute;
-  top: 400px;
-  right: -60px;
-  animation-delay: 0s;
-}
-
-.icon2 {
-  position: absolute;
-  right: 900px;
-  top: 50px;
-  animation-delay: 0.5s;
-}
-
-.icon3 {
-  position: absolute;
-  bottom: 200px;
-  left: 70px;
-  animation-delay: 1s;
-}
-
-.icon4 {
-  position: absolute;
-  top: 40px;
-  left: 100px;
-  animation-delay: 1.5s;
-}
-
-.icon5 {
-  position: absolute;
-  right: 1000px;
-  bottom: 400px;
-  animation-delay: 2s;
-}
-
-.icon6 {
-  position: absolute;
-  top: 250px;
-  left: -900px;
-  animation-delay: 2.5s;
-}
-
 .weather {
   background-size: cover;
   background-position: center;

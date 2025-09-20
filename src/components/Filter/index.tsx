@@ -3,10 +3,7 @@ import { Select } from "antd";
 import { useTodoStore } from "@/stores/todoStore";
 
 export default function Filter() {
-  const {
-    filter,
-    setFilter,
-  } = useTodoStore();
+  const { filter, setFilter } = useTodoStore();
   return (
     <div className="mb-4 w-full">
       <Select
@@ -17,6 +14,7 @@ export default function Filter() {
           { value: "all", label: "All" },
           { value: "active", label: "Incomplete" },
           { value: "completed", label: "Completed" },
+          { value: "expired", label: "Expired" },
         ]}
       />
     </div>
