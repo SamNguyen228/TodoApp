@@ -1,0 +1,9 @@
+export const QUERY_KEYS = {
+  TODOS: "TODOS",
+};
+
+export const MUTATION_KEYS = {
+  CREATE_TODO: "CREATE_TODO",
+  UPDATE_TODO: "UPDATE_TODO",
+  DELETE_TODO: "DELETE_TODO",
+};

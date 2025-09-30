@@ -7,6 +7,8 @@ import { MdLogout, MdLogin } from "react-icons/md";
 import { getUsername } from "@/api/BackendApi/auth";
 import Link from "next/link";
 import { NotificationInstance } from "antd/es/notification/interface";
+import Language from "../Language";
+import { useTranslation } from "react-i18next";
 
 interface HeaderProps {
   notify: NotificationInstance;
@@ -15,9 +17,9 @@ interface HeaderProps {
 const { Header } = Layout;
 const { Text } = Typography;
 
-
 export default function AppHeader({ notify }: HeaderProps) {
   const [user, setUser] = useState<{ username: string } | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     getUsername()
@@ -29,10 +31,10 @@ export default function AppHeader({ notify }: HeaderProps) {
     localStorage.removeItem("token");
     setUser(null);
     notify.success({
-      message: "Success",
-      description: "Logout Successful!"
+      message: t("notify.success"),
+      description: t("notify.logout_success")
     });
-    window.location.href = "/";
+    window.location.href = "/login";
   };
 
   return (
@@ -52,32 +54,34 @@ export default function AppHeader({ notify }: HeaderProps) {
         <Space align="center">
           <FaListCheck className="text-2xl text-blue-500" />
           <Text strong className="text-xl text-gray-700">
-            TodoApp
+            {t("title.app_name")}
           </Text>
         </Space>
 
         {user ? (
           <Space align="center">
             <Text className="text-gray-600">
-              Hello, <b className="text-cyan-300 capitalize">{user.username}</b>
+              {t("title.greet")}, <b className="text-cyan-300">{user.username}</b>
             </Text>
             <Popconfirm
-              title="Confirm Logout"
-              description="Are you sure you want to log out?"
+              title={t("prop_confirm.logout_confirm")}
+              description={t("prop_confirm.logout_confirm_des")}
               onConfirm={handleLogout}
-              okText="Yes"
-              cancelText="No"
+              okText={t("button.logout_ok")}
+              cancelText={t("button.logout_cancel")}
               okButtonProps={{ danger: true }}
             >
               <Button danger type="primary" icon={<MdLogout />}>
-                Logout
+                {t("button.logout")}
               </Button>
             </Popconfirm>
+
+            <Language />
           </Space>
         ) : (
           <Link href="/">
             <Button type="primary" icon={<MdLogin />}>
-              Login
+              {t("button.login")}
             </Button>
           </Link>
         )}

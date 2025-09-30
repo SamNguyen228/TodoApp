@@ -1,0 +1,127 @@
+{  
+  "list_todo": {  
+    "task": "Công việc",  
+    "created_at": "Ngày tạo",  
+    "deadline": "Hạn chót",  
+    "priority": "Độ ưu tiên",  
+    "actions": "Hành động",  
+    "no_deadline": "Không có hạn"  
+  },  
+  "priority": {  
+    "low": "Thấp",  
+    "medium": "Trung bình",  
+    "high": "Cao",  
+    "critical": "Khẩn cấp"  
+  },  
+  "filter": {  
+    "all": "Tất cả",  
+    "active": "Chưa hoàn thành",  
+    "completed": "Đã hoàn thành",  
+    "expired": "Quá hạn"  
+  },  
+  "search": {  
+    "search_placeholder": "Tìm kiếm công việc..."  
+  },  
+  "notify": {  
+    "success": "Thành công",  
+    "success_completed": "Các công việc đã chọn đã được đánh dấu hoàn thành!",  
+    "success_deleted": "Các công việc đã chọn đã được xóa khỏi danh sách!",  
+    "add_success": "Thêm công việc thành công!",  
+    "register_success": "Đăng ký thành công! Vui lòng đăng nhập.",  
+    "login_success": "Đăng nhập thành công!",  
+    "logout_success": "Đăng xuất thành công!",  
+    "update_task_success": "Cập nhật công việc thành công!",  
+    "delete": "Xóa",  
+    "warning": "Cảnh báo",  
+    "warning_blank": "Vui lòng nhập nội dung!",  
+    "error": "Lỗi",  
+    "error_add_failed": "Thêm công việc thất bại!",  
+    "error_login_failed": "Đăng nhập thất bại",  
+    "error_register_failed": "Đăng ký thất bại",  
+    "error_confirm_password": "Mật khẩu không khớp",  
+    "error_overdue_deadline": "Hạn chót đã quá hạn. Không thể cập nhật!",  
+    "error_load_province": "Tải danh sách tỉnh thất bại",  
+    "error_display_loation_name": "Không thể xác định địa chỉ",  
+    "error_get_gps": "Lấy vị trí GPS thất bại",  
+    "error_not_found_address": "Không tìm thấy địa chỉ!",
+    "error_invalid": "Tên đăng nhập hoặc mật khẩu không đúng"  
+  },  
+  "prop_confirm": {  
+    "delete_confirm": "Xác nhận xóa",  
+    "delete_confirm_one": "Bạn có chắc muốn xóa công việc này?",  
+    "delete_confirm_many": "Bạn có chắc muốn xóa {{count}} công việc đã chọn?",  
+    "logout_confirm": "Xác nhận đăng xuất",  
+    "logout_confirm_des": "Bạn có chắc muốn đăng xuất?"  
+  },  
+  "form": {  
+    "name_label": "Tên đăng nhập",  
+    "name_rule_min": "Tên đăng nhập phải có ít nhất 2 ký tự",  
+    "name_rule_pattern": "Chỉ cho phép chữ cái",  
+    "name_placeholder": "Nhập tên đăng nhập",  
+    "full_name_label": "Họ và tên",  
+    "full_name_placeholder": "Nhập họ và tên",  
+    "email_label": "Email",  
+    "email_rule_type": "Định dạng email không hợp lệ",  
+    "email_placeholder": "Nhập email",  
+    "password_label": "Mật khẩu",  
+    "password_placeholder": "Nhập mật khẩu",  
+    "confirm_password_label": "Xác nhận mật khẩu",  
+    "confirm_password_placeholder": "Nhập lại mật khẩu",  
+    "form_option_login": "Chưa có tài khoản?",  
+    "form_option_register": "Đã có tài khoản?",  
+    "form_redirect_login": "Đăng nhập ngay",  
+    "form_redirect_register": "Đăng ký ngay"  
+  },  
+  "select": {  
+    "province_placeholder": "Tỉnh/Thành phố",  
+    "district_placeholder": "Quận/Huyện",  
+    "ward_placeholder": "Phường/Xã"  
+  },  
+  "title": {  
+    "login": "Đăng nhập",  
+    "register": "Đăng ký",  
+    "task_name": "Tên công việc",  
+    "deadline": "Hạn chót",  
+    "priority": "Độ ưu tiên",  
+    "app_name": "Quản lý công việc",  
+    "greet": "Xin chào",  
+    "weather_widget": "Tiện ích Thời tiết"  
+  },  
+  "validation": {  
+    "required": "{{fieldName}} không được để trống"  
+  },  
+  "button": {  
+    "complete": "Hoàn thành",  
+    "delete_ok": "Xóa",  
+    "logout_ok": "Có",  
+    "logout_cancel": "Không",  
+    "save": "Lưu",  
+    "cancel": "Hủy",  
+    "delete": "Xóa",  
+    "login": "Đăng nhập",  
+    "register": "Đăng ký",  
+    "logout": "Đăng xuất"  
+  },  
+  "add_todo": {  
+    "placeholder": "Thêm công việc mới...",  
+    "deadline": "Hạn chót",  
+    "add_button": "Thêm"  
+  },  
+  "weather": {  
+    "search_placeholder": "Nhập địa chỉ...",  
+    "getting_location": "Đang lấy vị trí của bạn...",  
+    "getting_time": "Đang lấy giờ địa phương...",  
+    "empty_data": "Không có dữ liệu"  
+  },  
+  "language": {  
+    "english": "Tiếng Anh",  
+    "vietnamese": "Tiếng Việt",
+    "japanese": "Tiếng Nhật",
+    "german": "Tiếng Đức"  
+  },  
+  "footer": {  
+    "year": "2025",  
+    "name": "Sam Dev",  
+    "copy_right": "Tất cả đều được bảo lưu"  
+  }  
+}

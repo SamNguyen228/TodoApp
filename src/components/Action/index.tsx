@@ -6,24 +6,46 @@ import type { NotificationInstance } from "antd/es/notification/interface";
 import { useTodoStore } from "@/stores/todoStore";
 import { CheckOutlined, DeleteOutlined } from "@ant-design/icons";
 import FireworkCelebration from "@/components/FireworkCelebration";
+import { useTranslation } from "react-i18next";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import TodoApi from "@/api/TodoApi";
+import { MUTATION_KEYS, QUERY_KEYS } from "@/constants/queryKeys";
 
 interface ActionProps {
   notify: NotificationInstance;
 }
 
 export default function Action({ notify }: ActionProps) {
-  const { deleteMany, completeMany, selectedIds, todos } = useTodoStore();
+  const { selectedIds, setSelectedIds } = useTodoStore();
   const [showFirework, setShowFirework] = useState(false);
+  const { t } = useTranslation()
+  const queryClient = useQueryClient();
 
-  const allSelectedCompleted = selectedIds.every(
-    (id) => todos.find((t) => t.id === id)?.completed
-  );
+  const completeManyMutation = useMutation({
+    mutationKey: [MUTATION_KEYS.UPDATE_TODO],
+    mutationFn: (ids: number[]) => TodoApi.completeMany(ids),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
+      setSelectedIds([]);
+    },
+  });
+
+  const deleteManyMutation = useMutation({
+    mutationKey: [MUTATION_KEYS.DELETE_TODO],
+    mutationFn: (ids: number[]) => TodoApi.deleteMany(ids),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
+      setSelectedIds([]);
+    },
+  });
+
+  const allSelectedCompleted = false;
 
   const handleComplete = () => {
-    completeMany(selectedIds);
+    completeManyMutation.mutate(selectedIds);
     notify.success({
-      message: "Success",
-      description: "Selected tasks have been marked as completed",
+      message: t("notify.success"),
+      description: t("notify.success_completed"),
     });
 
     setShowFirework(true);
@@ -32,10 +54,10 @@ export default function Action({ notify }: ActionProps) {
   };
 
   const handleDelete = () => {
-    deleteMany(selectedIds);
+    deleteManyMutation.mutate(selectedIds);
     notify.success({
-      message: "Deleted",
-      description: "Selected tasks have been removed from the list",
+      message: t("notify.delete"),
+      description: t("notify.success_deleted"),
     });
   };
 
@@ -49,14 +71,14 @@ export default function Action({ notify }: ActionProps) {
         onClick={handleComplete}
         icon={<CheckOutlined />}
       >
-        Complete
+        {t("button.complete")}
       </Button>
 
       <Popconfirm
-        title="Confirm deletion"
-        description={`Are you sure you want to delete ${selectedIds.length} selected task(s)?`}
-        okText="Delete"
-        cancelText="Cancel"
+        title={t("prop_confirm.delete_confirm")}
+        description={t("prop_confirm.delete_confirm_des", { count: selectedIds.length })}
+        okText={t("button.delete_ok")}
+        cancelText={t("button.cancel")}
         onConfirm={handleDelete}
       >
         <Button
@@ -66,7 +88,7 @@ export default function Action({ notify }: ActionProps) {
           disabled={selectedIds.length === 0}
           icon={<DeleteOutlined />}
         >
-          Delete
+          {t("button.delete")}
         </Button>
       </Popconfirm>
 

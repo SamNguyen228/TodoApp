@@ -1,14 +1,14 @@
 "use client"
 
-import AuthForm from "@/components/Auth";
+import RegisterForm from "@/components/Auth/Register"
 import { notification } from "antd";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [api, contextHolder] = notification.useNotification();
   return (
     <>
       {contextHolder}
-      <AuthForm notify={api} />
+      <RegisterForm notify={api} />
     </>
   );
 }

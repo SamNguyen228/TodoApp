@@ -10,7 +10,8 @@ import { NotificationInstance } from "antd/es/notification/interface";
 import { TiWeatherPartlySunny } from "react-icons/ti";
 import { bgImage } from "@/custom/backgroundTransiton";
 import { MdMyLocation } from "react-icons/md";
-import LocationCascader from "../LocationCascader";
+import LocationSelector from "../LocationCascader";
+import { useTranslation } from "react-i18next";
 
 interface WeatherProps {
   notify: NotificationInstance;
@@ -21,6 +22,7 @@ export default function WeatherWidget({ notify }: WeatherProps) {
   const [address, setAddress] = useState("");
   const [displayName, setDisplayName] = useState<string>("");
   const [time, setTime] = useState<string>("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -50,11 +52,11 @@ export default function WeatherWidget({ notify }: WeatherProps) {
             const addrRes = await fetchLocation({ lat: latitude, lon: longitude });
             setDisplayName(addrRes.formattedAddress);
           } catch {
-            setDisplayName("Unable to determine address");
+            setDisplayName(t("error.error_display_loation_name"));
           }
         },
         () => {
-          console.warn("Failed to get GPS location");
+          console.warn(t("error.error_get_gps"));
         }
       );
     }
@@ -64,6 +66,7 @@ export default function WeatherWidget({ notify }: WeatherProps) {
     queryKey: ["weather", coords],
     queryFn: () => fetchWeatherByCoords(coords!.lat, coords!.lon),
     enabled: !!coords,
+    staleTime: 3600000
   });
 
   const geocodeMutation = useMutation({
@@ -74,8 +77,8 @@ export default function WeatherWidget({ notify }: WeatherProps) {
     },
     onError: () => {
       notify.error({
-        message: "Error",
-        description: "Address not found!",
+        message: t("notify.error"),
+        description: t("error.error_not_found_address"),
       });
     },
   });
@@ -85,8 +88,8 @@ export default function WeatherWidget({ notify }: WeatherProps) {
       geocodeMutation.mutate(address);
     } else {
       notify.warning({
-        message: "Warning",
-        description: "Please fill your blank!",
+        message: t("notify.warning"),
+        description: t("notify.warning_blank"),
       });
       return;
     }
@@ -101,11 +104,11 @@ export default function WeatherWidget({ notify }: WeatherProps) {
         <div className="flex flex-wrap justify-center items-center gap-2 mb-6">
           <div className="flex items-center gap-2 w-full text-cyan-300 justify-center mb-4">
             <TiWeatherPartlySunny className="text-3xl" />
-            <h2 className="font-bold text-xl">Weather Widget</h2>
+            <h2 className="font-bold text-xl">{t("title.weather_widget")}</h2>
           </div>
 
           <Input
-            placeholder="Enter address..."
+            placeholder={t("weather.search_placeholder")}
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             onPressEnter={handleSearch}
@@ -121,9 +124,9 @@ export default function WeatherWidget({ notify }: WeatherProps) {
             className="!bg-white hover:bg-blue-600 border-none"
           />
 
-          <LocationCascader
+          <LocationSelector
             notify={notify}
-            onSelect={(fullAddress) => geocodeMutation.mutate(fullAddress)}
+            onSelect={(addr) => geocodeMutation.mutate(addr)}
           />
 
           <Button
@@ -157,13 +160,13 @@ export default function WeatherWidget({ notify }: WeatherProps) {
               <div className="flex items-center mb-2 gap-2">
                 <FaLocationDot className="text-2xl text-red-500 animate-bounce" />
                 <p className="text-yellow-400 font-bold text-base">
-                  {displayName || "Get your location..."}
+                  {displayName || t("weather.getting_location")}
                 </p>
               </div>
               <div className="flex items-center gap-2 text-base">
                 <FaClock className="text-green-500" />
                 <p className="text-white font-mono mt-1">
-                  {time || "Get local time..."}
+                  {time || t("weather.getting_time")}
                 </p>
               </div>
               <div className="mt-3 space-y-2 text-base">
@@ -189,7 +192,7 @@ export default function WeatherWidget({ notify }: WeatherProps) {
             </div>
           </div>
         ) : (
-          <p className="text-center text-red-500">No data available</p>
+          <p className="text-center text-red-500">{t("weather.empty_data")}</p>
         )}
       </Card>
     </div>

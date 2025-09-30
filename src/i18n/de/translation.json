@@ -1,0 +1,129 @@
+{
+  "list_todo": {
+    "task": "Aufgabe",
+    "created_at": "Erstellt am",
+    "deadline": "Frist",
+    "priority": "Priorität",
+    "actions": "Aktionen",
+    "no_deadline": "Keine Frist"
+  },
+  "priority": {
+    "low": "Niedrig",
+    "medium": "Mittel",
+    "high": "Hoch",
+    "critical": "Kritisch"
+  },
+  "filter": {
+    "all": "Alle",
+    "active": "Unvollständig",
+    "completed": "Abgeschlossen",
+    "expired": "Abgelaufen"
+  },
+  "search": {
+    "search_placeholder": "Aufgaben suchen..."
+  },
+  "notify": {
+    "success": "Erfolg",
+    "success_completed": "Ausgewählte Aufgaben wurden als erledigt markiert!",
+    "success_deleted": "Ausgewählte Aufgaben wurden gelöscht!",
+    "add_success": "Aufgabe erfolgreich hinzugefügt!",
+    "register_success": "Registrierung erfolgreich! Bitte einloggen.",
+    "login_success": "Login erfolgreich!",
+    "logout_success": "Logout erfolgreich!",
+    "update_task_success": "Aufgabe erfolgreich aktualisiert!",
+
+    "delete": "Löschen",
+    "warning": "Warnung",
+    "warning_blank": "Bitte Inhalt eingeben!",
+
+    "error": "Fehler",
+    "error_add_failed": "Aufgabe konnte nicht hinzugefügt werden!",
+    "error_login_failed": "Login fehlgeschlagen",
+    "error_register_failed": "Registrierung fehlgeschlagen",
+    "error_confirm_password": "Passwörter stimmen nicht überein",
+    "error_overdue_deadline": "Frist ist bereits abgelaufen. Aktualisierung nicht möglich!",
+    "error_load_province": "Laden der Regionen fehlgeschlagen",
+    "error_display_loation_name": "Adresse konnte nicht bestimmt werden",
+    "error_get_gps": "GPS-Standort konnte nicht abgerufen werden",
+    "error_not_found_address": "Adresse nicht gefunden!",
+    "error_invalid": "Ungültiger Benutzername oder Passwort"
+  },
+  "prop_confirm": {
+    "delete_confirm": "Löschen bestätigen",
+    "delete_confirm_one": "Möchten Sie diese Aufgabe wirklich löschen?",
+    "delete_confirm_many": "Möchten Sie {{count}} ausgewählte Aufgabe(n) wirklich löschen?",
+    "logout_confirm": "Logout bestätigen",
+    "logout_confirm_des": "Möchten Sie sich wirklich abmelden?"
+  },
+  "form": {
+    "name_label": "Benutzername",
+    "name_rule_min": "Benutzername muss mindestens 2 Zeichen lang sein",
+    "name_rule_pattern": "Nur Buchstaben erlaubt",
+    "name_placeholder": "Benutzernamen eingeben",
+    "full_name_label": "Vollständiger Name",
+    "full_name_placeholder": "Vollständigen Namen eingeben",
+    "email_label": "E-Mail",
+    "email_rule_type": "Ungültiges E-Mail-Format",
+    "email_placeholder": "E-Mail eingeben",
+    "password_label": "Passwort",
+    "password_placeholder": "Passwort eingeben",
+    "confirm_password_label": "Passwort bestätigen",
+    "confirm_password_placeholder": "Passwort wiederholen",
+    "form_option_login": "Noch kein Konto?",
+    "form_option_register": "Bereits ein Konto?",
+    "form_redirect_login": "Jetzt einloggen",
+    "form_redirect_register": "Jetzt registrieren"
+  },
+  "select": {
+    "province_placeholder": "Bundesland",
+    "district_placeholder": "Bezirk",
+    "ward_placeholder": "Ortsteil"
+  },
+  "title": {
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "task_name": "Aufgabenname",
+    "deadline": "Frist",
+    "priority": "Priorität",
+    "app_name": "Todo App",
+    "greet": "Hallo",
+    "weather_widget": "Wetter-Widget"
+  },
+  "validation": {
+    "required": "{{fieldName}} darf nicht leer sein"
+  },
+  "button": {
+    "complete": "Erledigt",
+    "delete_ok": "Löschen",
+    "logout_ok": "Ja",
+    "logout_cancel": "Nein",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden"
+  },
+  "add_todo": {
+    "placeholder": "Neue Aufgabe hinzufügen...",
+    "deadline": "Frist",
+    "add_button": "Hinzufügen"
+  },
+  "weather": {
+    "search_placeholder": "Adresse eingeben...",
+    "getting_location": "Standort wird ermittelt...",
+    "getting_time": "Ortszeit wird ermittelt...",
+    "empty_data": "Keine Daten verfügbar"
+  },
+  "language": {
+    "english": "Englisch",
+    "vietnamese": "Vietnamesisch",
+    "japanese": "Japanisch",
+    "german": "Deutsch"
+  },
+  "footer": {
+    "year": "2025",
+    "name": "Sam Dev",
+    "copy_right": "Alle Rechte vorbehalten."
+  }
+}

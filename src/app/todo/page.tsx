@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Filter from "@/components/Filter";
 import InputAdd from "@/components/Add";
 import Action from "@/components/Action";
@@ -14,17 +14,50 @@ import { FaReact } from "react-icons/fa";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CarouselBackground from "@/components/CarouselBackground";
+import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 export default function App() {
   const [api, contextHolder] = notification.useNotification();
   const [searchTerm, setSearchTerm] = useState("");
   const { setSearch } = useTodoStore();
+  const router = useRouter();
+  const { t } = useTranslation();
+
+  const isTokenExpired = (token: string) => {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1])); // decode JWT payload
+      console.log(payload);
+      const exp = payload.exp * 1000; 
+      return Date.now() >= exp; 
+    } catch (e) {
+      console.error(e);
+      return true; 
+    }
+  };
+
+  useEffect(() => {
+    const checkToken = () => {
+      const token = localStorage.getItem("token");
+
+      if (!token || isTokenExpired(token)) {
+        localStorage.removeItem("token");
+        router.replace("/login");
+        return;
+      }
+    };
+
+    checkToken();
+
+    const interval = setInterval(checkToken, 60 * 1000); 
+    return () => clearInterval(interval);
+  }, [router]);
 
   const handleSearch = (val: string) => {
     setSearchTerm(val);
     setSearch(val);
   };
-
+  
   return (
     <>
       {contextHolder}
@@ -36,7 +69,7 @@ export default function App() {
         <div className="relative z-10 bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-6">
           <div className="flex items-center justify-center gap-4 text-red-400">
             <FaReact className="text-5xl reactIcon" />
-            <h1 className="text-4xl font-bold text-center">Todo App</h1>
+            <h1 className="text-4xl font-bold text-center">{t("title.app_name")}</h1>
           </div>
 
           <WeatherWidget notify={api} />

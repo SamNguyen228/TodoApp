@@ -1,17 +1,23 @@
-import { Todo } from "@/stores/todoStore";
 import axiosClient from "@/api/axiosClient";
+import type { Todo } from "@/stores/todoStore";
 
-export const todoApi = {
+export const TodoApi = {
   getTodos: async (
     page: number,
     size: number,
     filter: string,
-    search: string
+    search: string,
+    sortField: string,
+    sortOrder: "ascend" | "descend" | null
   ) => {
     const res = await axiosClient.get("/todos", {
-      params: { page, size, filter, search },
+      params: { page, size, filter, search, sortField, sortOrder },
     });
-    return res.data;
+    return res.data as {
+      content: Todo[];
+      currentPage: number;
+      totalElements: number;
+    };
   },
 
   createTodo: async (
@@ -20,7 +26,7 @@ export const todoApi = {
     priority: string
   ) => {
     const res = await axiosClient.post("/todos", { title, deadline, priority });
-    return res.data;
+    return res.data as Todo;
   },
 
   updateTodo: async (id: number, data: Partial<Todo>) => {
@@ -46,3 +52,7 @@ export const todoApi = {
     return res.data;
   },
 };
+
+export default TodoApi;
+
+

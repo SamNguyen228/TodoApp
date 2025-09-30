@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { todoApi } from "@/api/BackendApi/todo";
 
 export type Priority = "Low" | "Medium" | "High" | "Critical";
 
@@ -9,7 +8,7 @@ export interface Todo {
   completed: boolean;
   autoCompleted: boolean;
   createdAt: string;
-  updateAt: string;
+  updatedAt: string;
   deadline?: string | null;
   priority: Priority;
   expired?: boolean;
@@ -23,90 +22,40 @@ export interface EditingTodo {
 }
 
 interface TodoState {
-  todos: Todo[];
   filter: "all" | "completed" | "active" | "expired";
   selectedIds: number[];
   editing: EditingTodo | null;
   search: string;
 
-  loadTodos: () => Promise<void>;
+  currentPage: number;
+  pageSize: number;
+
+  sortField: string;
+  sortOrder: "ascend" | "descend" | null;
+
   setSearch: (val: string) => void;
-  addTodo: (title: string, deadline: string | null, priority: Priority) => Promise<void>;
-  toggleTodo: (id: number) => Promise<void>;
-  deleteTodo: (id: number) => Promise<void>;
-  editTodo: (id: number, title: string, deadline: string | null, priority: Priority) => Promise<void>;
-  deleteMany: (ids: number[]) => Promise<void>;
-  completeMany: (ids: number[]) => Promise<void>;
   setFilter: (filter: "all" | "completed" | "active" | "expired") => void;
   setSelectedIds: (ids: number[]) => void;
   toggleSelect: (id: number, checked: boolean) => void;
   setEditing: (todo: EditingTodo | null) => void;
-  checkExpired: () => void;
+
+  setSort: (field: string, order: "ascend" | "descend" | null) => void;
+  setPagination: (page: number, size: number) => void;
 }
 
-export const useTodoStore = create<TodoState>((set, get) => ({
-  todos: [],
+export const useTodoStore = create<TodoState>((set) => ({
   filter: "all",
   selectedIds: [],
   editing: null,
   search: "",
 
-  loadTodos: async () => {
-    const todosFromApi: Todo[] = await todoApi.getTodos();
+  currentPage: 1,
+  pageSize: 5,
 
-    const todosWithExpired: Todo[] = todosFromApi.map((todo) => ({
-      ...todo,
-      expired: todo.autoCompleted ?? false,
-    }));
-
-    set({ todos: todosWithExpired });
-  },
+  sortField: "createdAt",
+  sortOrder: null,
 
   setSearch: (val) => set({ search: val }),
-
-  addTodo: async (title, deadline = null, priority = "Medium") => {
-    const newTodo = await todoApi.createTodo(title, deadline, priority);
-    set((state) => ({ todos: [...state.todos, newTodo] }));
-  },
-
-  toggleTodo: async (id) => {
-    const todo = get().todos.find((t) => t.id === id);
-    if (!todo) return;
-    const updated = await todoApi.updateTodo(id, { completed: !todo.completed });
-    set((state) => ({
-      todos: state.todos.map((t) => (t.id === id ? updated : t)),
-    }));
-  },
-
-  deleteTodo: async (id) => {
-    await todoApi.deleteTodo(id);
-    set((state) => ({ todos: state.todos.filter((t) => t.id !== id) }));
-  },
-
-  editTodo: async (id, title, deadline, priority) => {
-    const updated = await todoApi.updateTodo(id, { title, deadline, priority });
-    set((state) => ({
-      todos: state.todos.map((t) => (t.id === id ? updated : t)),
-    }));
-  },
-
-  deleteMany: async (ids) => {
-    await Promise.all(ids.map((id) => todoApi.deleteTodo(id)));
-    set((state) => ({
-      todos: state.todos.filter((t) => !ids.includes(t.id)),
-      selectedIds: [],
-    }));
-  },
-
-  completeMany: async (ids) => {
-    await Promise.all(ids.map((id) => todoApi.updateTodo(id, { completed: true })));
-    set((state) => ({
-      todos: state.todos.map((t) =>
-        ids.includes(t.id) ? { ...t, completed: true } : t
-      ),
-      selectedIds: [],
-    }));
-  },
 
   setFilter: (filter) => set({ filter }),
 
@@ -121,31 +70,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
 
   setEditing: (todo) => set({ editing: todo }),
 
-  checkExpired: async () => {
-    const updatedTodos: Todo[] = await todoApi.autoCompleteOverdue();
-    const now = Date.now();
+  setSort: (field, order) => set({ sortField: field, sortOrder: order }),
 
-    set((state) => {
-      const updatedMap: Record<number, Todo> = Object.fromEntries(
-        updatedTodos.map((t) => [t.id, t])
-      );
-
-      const merged: Todo[] = state.todos.map((todo) => {
-        const updated = updatedMap[todo.id];
-        const completed = updated?.completed ?? todo.completed;
-        const autoCompleted = updated?.autoCompleted ?? todo.autoCompleted;
-
-        return {
-          ...todo,
-          completed,
-          autoCompleted,
-          expired: todo.deadline
-            ? new Date(todo.deadline).getTime() < now && !completed
-            : false,
-        };
-      });
-
-      return { todos: merged };
-    });
-  },
+  setPagination: (page, size) => set({ currentPage: page, pageSize: size }),
 }));

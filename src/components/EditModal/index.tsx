@@ -4,34 +4,54 @@ import { useTodoStore } from "@/stores/todoStore";
 import dayjs, { Dayjs } from "dayjs";
 import type { NotificationInstance } from "antd/es/notification/interface";
 import type { Priority } from "@/stores/todoStore";
+import { useTranslation } from "react-i18next";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import TodoApi from "@/api/TodoApi";
+import { MUTATION_KEYS, QUERY_KEYS } from "@/constants/queryKeys";
 
 interface EditModalProps {
   notify: NotificationInstance;
 }
 
 export default function EditModal({ notify }: EditModalProps) {
-  const { editTodo, editing, setEditing } = useTodoStore();
+  const { editing, setEditing } = useTodoStore();
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+
+  const updateMutation = useMutation({
+    mutationKey: [MUTATION_KEYS.UPDATE_TODO],
+    mutationFn: (payload: { id: number; title: string; deadline: string | null; priority: Priority }) =>
+      TodoApi.updateTodo(payload.id, { title: payload.title, deadline: payload.deadline, priority: payload.priority }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
+    },
+  });
 
   const handleOk = () => {
     if (editing && editing.title.trim()) {
       if (editing.deadline && dayjs(editing.deadline).isBefore(dayjs())) {
         notify.error({
-          message: "Error",
-          description: "Deadline is already overdue. Cannot update!",
+          message: t("notify.error"),
+          description: t("notify.error_overdue_dealine"),
         });
         return;
       }
 
-      editTodo(editing.id, editing.title, editing.deadline, editing.priority);
+      updateMutation.mutate({
+        id: editing.id,
+        title: editing.title,
+        deadline: editing.deadline,
+        priority: editing.priority,
+      });
       setEditing(null);
       notify.success({
-        message: "Success",
-        description: "Update task successful!", 
+        message: t("notify.success"),
+        description: t("notify.update_task_success"), 
       });
     } else {
       notify.warning({
-        message: "Warning",
-        description: "Please fill your content!",
+        message: t("notify.warning"),
+        description: t("notify.warning_blank"),
       });
     }
   };
@@ -45,7 +65,7 @@ export default function EditModal({ notify }: EditModalProps) {
       onOk={handleOk}
     >
       <div className="mb-3">
-        <label className="block mb-1 font-medium">Task Name</label>
+        <label className="block mb-1 font-medium">{t("title.task_name")}</label>
         <Input
           value={editing?.title}
           onChange={(e) =>
@@ -58,7 +78,7 @@ export default function EditModal({ notify }: EditModalProps) {
       </div>
 
       <div className="mb-3">
-        <label className="block mb-1 font-medium">Deadline</label>
+        <label className="block mb-1 font-medium">{t("title.deadline")}</label>
         <DatePicker
           showTime
           format="DD-MM-YYYY HH:mm"
@@ -75,7 +95,7 @@ export default function EditModal({ notify }: EditModalProps) {
       </div>
 
       <div className="mb-3">
-        <label className="block mb-1 font-medium">Priority</label>
+        <label className="block mb-1 font-medium">{t("title.priority")}</label>
         <Select<Priority>
           value={editing?.priority || "Medium"}
           onChange={(val) =>

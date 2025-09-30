@@ -6,12 +6,12 @@ import { RiNextjsFill, RiTailwindCssFill } from "react-icons/ri";
 import { SiSpringboot } from "react-icons/si";
 
 const icons = [
-  <FaReact key="react" className="mx-8 text-[80px] text-blue-500" />,
-  <FaAngular key="angular" className="mx-8 text-[80px] text-red-500" />,
-  <FaNodeJs key="node" className="mx-8 text-[80px] text-green-600" />,
-  <RiTailwindCssFill key="tailwind" className="mx-8 text-[80px] text-cyan-300" />,
-  <RiNextjsFill key="next" className="mx-8 text-[80px] text-black" />,
-  <SiSpringboot key="spring" className="mx-8 text-[80px] text-green-800" />,
+  <FaReact key="react" className="mx-8 text-[100px] text-blue-500" />,
+  <FaAngular key="angular" className="mx-8 text-[100px] text-red-500" />,
+  <FaNodeJs key="node" className="mx-8 text-[100px] text-green-600" />,
+  <RiTailwindCssFill key="tailwind" className="mx-8 text-[100px] text-cyan-300" />,
+  <RiNextjsFill key="next" className="mx-8 text-[100px] text-black" />,
+  <SiSpringboot key="spring" className="mx-8 text-[100px] text-green-800" />,
 ];
 
 function Row({ top, reverse }: { top: string; reverse?: boolean }) {

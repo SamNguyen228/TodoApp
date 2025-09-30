@@ -1,0 +1,129 @@
+{
+  "list_todo": {
+    "task": "タスク",
+    "created_at": "作成日",
+    "deadline": "締め切り",
+    "priority": "優先度",
+    "actions": "操作",
+    "no_deadline": "締め切りなし"
+  },
+  "priority": {
+    "low": "低",
+    "medium": "中",
+    "high": "高",
+    "critical": "最重要"
+  },
+  "filter": {
+    "all": "すべて",
+    "active": "未完了",
+    "completed": "完了",
+    "expired": "期限切れ"
+  },
+  "search": {
+    "search_placeholder": "タスクを検索..."
+  },
+  "notify": {
+    "success": "成功",
+    "success_completed": "選択したタスクを完了にしました！",
+    "success_deleted": "選択したタスクを削除しました！",
+    "add_success": "タスクが正常に追加されました！",
+    "register_success": "登録が完了しました！ログインしてください。",
+    "login_success": "ログイン成功！",
+    "logout_success": "ログアウト成功！",
+    "update_task_success": "タスクを更新しました！",
+
+    "delete": "削除",
+    "warning": "警告",
+    "warning_blank": "内容を入力してください！",
+
+    "error": "エラー",
+    "error_add_failed": "タスクの追加に失敗しました！",
+    "error_login_failed": "ログインに失敗しました",
+    "error_register_failed": "登録に失敗しました",
+    "error_confirm_password": "パスワードが一致しません",
+    "error_overdue_deadline": "締め切りが過ぎています。更新できません！",
+    "error_load_province": "都道府県の読み込みに失敗しました",
+    "error_display_loation_name": "住所を特定できません",
+    "error_get_gps": "GPS位置情報の取得に失敗しました",
+    "error_not_found_address": "住所が見つかりません！",
+    "error_invalid": "ユーザー名またはパスワードが正しくありません"
+  },
+  "prop_confirm": {
+    "delete_confirm": "削除の確認",
+    "delete_confirm_one": "このタスクを削除してもよろしいですか？",
+    "delete_confirm_many": "{{count}} 件の選択したタスクを削除してもよろしいですか？",
+    "logout_confirm": "ログアウトの確認",
+    "logout_confirm_des": "ログアウトしてもよろしいですか？"
+  },
+  "form": {
+    "name_label": "ユーザー名",
+    "name_rule_min": "ユーザー名は2文字以上で入力してください",
+    "name_rule_pattern": "文字のみ使用できます",
+    "name_placeholder": "ユーザー名を入力してください",
+    "full_name_label": "氏名",
+    "full_name_placeholder": "氏名を入力してください",
+    "email_label": "メールアドレス",
+    "email_rule_type": "無効なメール形式です",
+    "email_placeholder": "メールアドレスを入力してください",
+    "password_label": "パスワード",
+    "password_placeholder": "パスワードを入力してください",
+    "confirm_password_label": "パスワード確認",
+    "confirm_password_placeholder": "パスワードを再入力してください",
+    "form_option_login": "アカウントをお持ちではありませんか？",
+    "form_option_register": "すでにアカウントをお持ちですか？",
+    "form_redirect_login": "今すぐログイン",
+    "form_redirect_register": "今すぐ登録"
+  },
+  "select": {
+    "province_placeholder": "都道府県",
+    "district_placeholder": "市区町村",
+    "ward_placeholder": "町域"
+  },
+  "title": {
+    "login": "ログイン",
+    "register": "登録",
+    "task_name": "タスク名",
+    "deadline": "締め切り",
+    "priority": "優先度",
+    "app_name": "アプリ",
+    "greet": "こんにちは",
+    "weather_widget": "天気ウィジェット"
+  },
+  "validation": {
+    "required": "{{fieldName}} は必須です"
+  },
+  "button": {
+    "complete": "完了",
+    "delete_ok": "削除",
+    "logout_ok": "はい",
+    "logout_cancel": "いいえ",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "login": "ログイン",
+    "register": "登録",
+    "logout": "ログアウト"
+  },
+  "add_todo": {
+    "placeholder": "新しいタスクを追加...",
+    "deadline": "締め切り",
+    "add_button": "追加"
+  },
+  "weather": {
+    "search_placeholder": "住所を入力...",
+    "getting_location": "位置情報を取得中...",
+    "getting_time": "現地時間を取得中...",
+    "empty_data": "データがありません"
+  },
+  "language": {
+    "english": "英語",
+    "vietnamese": "ベトナム語",
+    "japanese": "日本語",
+    "german": "ドイツ語"
+  },
+  "footer": {
+    "year": "2025",
+    "name": "Sam Dev",
+    "copy_right": "無断複製・転載を禁じます。"
+  }
+}

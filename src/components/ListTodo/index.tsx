@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Table, Button, Popconfirm } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useTodoStore, type Todo, type Priority } from "@/stores/todoStore";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import type { NotificationInstance } from "antd/es/notification/interface";
+import { useTranslation } from "react-i18next";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import TodoApi from "@/api/TodoApi";
+import { QUERY_KEYS, MUTATION_KEYS } from "@/constants/queryKeys";
 
 interface ListTodoProps {
   notify: NotificationInstance;
@@ -13,29 +17,60 @@ interface ListTodoProps {
 export default function ListTodo({ notify }: ListTodoProps) {
   const {
     filter,
-    todos,
     selectedIds,
     search,
-    deleteTodo,
     setSelectedIds,
     setEditing,
-    checkExpired,
+    currentPage,
+    pageSize,
+    sortField,
+    sortOrder,
   } = useTodoStore();
 
-  const [pageSize, setPageSize] = useState(5);
-  const [currentPage, setCurrentPage] = useState(1);
+  const queryClient = useQueryClient();
 
-  const filteredTodos = todos.filter((todo) => {
-    if (filter === "completed" && !todo.completed) return false;
-    if (filter === "active" && todo.completed) return false;
-    if (filter === "expired" && !todo.expired) return false;
-    if (search && !todo.title.toLowerCase().includes(search.toLowerCase()))
-      return false;
-    return true;
+  const { data, isLoading } = useQuery({
+    queryKey: [
+      QUERY_KEYS.TODOS,
+      {
+        page: currentPage,
+        size: pageSize,
+        filter,
+        search,
+        sortField,
+        sortOrder,
+      },
+    ],
+    queryFn: () =>
+      TodoApi.getTodos(
+        currentPage - 1,
+        pageSize,
+        filter,
+        search,
+        sortField,
+        sortOrder
+      ),
+    placeholderData: (prev) => prev,
+  });
+
+  const deleteTodoMutation = useMutation({
+    mutationKey: [MUTATION_KEYS.DELETE_TODO],
+    mutationFn: (id: number) => TodoApi.deleteTodo(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
+    },
+  });
+
+  const autoCompleteMutation = useMutation({
+    mutationKey: [MUTATION_KEYS.UPDATE_TODO],
+    mutationFn: () => TodoApi.autoCompleteOverdue(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
+    },
   });
 
   const handleDelete = (id: number) => {
-    deleteTodo(id);
+    deleteTodoMutation.mutate(id);
     notify.success({
       message: "Success",
       description: "Task has been removed from the list",
@@ -49,20 +84,18 @@ export default function ListTodo({ notify }: ListTodoProps) {
     Critical: 4,
   };
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      checkExpired();
-    }, 30 * 1000);
-    return () => clearInterval(timer);
-  }, [checkExpired]);
+  const { t } = useTranslation();
 
   useEffect(() => {
-    useTodoStore.getState().loadTodos();
-  }, []);
+    const timer = setInterval(() => {
+      autoCompleteMutation.mutate();
+    }, 30 * 1000);
+    return () => clearInterval(timer);
+  }, [autoCompleteMutation]);
 
   const columns: ColumnsType<Todo> = [
     {
-      title: "TASK",
+      title: t("list_todo.task"),
       dataIndex: "title",
       align: "center",
       render: (text: string, record: Todo) => (
@@ -74,7 +107,7 @@ export default function ListTodo({ notify }: ListTodoProps) {
       ),
     },
     {
-      title: "CREATED AT",
+      title: t("list_todo.created_at"),
       dataIndex: "createdAt",
       align: "center",
       render: (date: string) =>
@@ -90,7 +123,7 @@ export default function ListTodo({ notify }: ListTodoProps) {
         ),
     },
     {
-      title: "DEADLINE",
+      title: t("list_todo.deadline"),
       dataIndex: "deadline",
       align: "center",
       sorter: (a, b) => {
@@ -100,7 +133,9 @@ export default function ListTodo({ notify }: ListTodoProps) {
       },
       render: (date: string | null | undefined, record: Todo) => {
         if (!date)
-          return <span className="text-gray-400">No deadline</span>;
+          return (
+            <span className="text-gray-400">{t("list_todo.no_deadline")}</span>
+          );
 
         const deadlinePassed = record.expired || record.autoCompleted;
 
@@ -120,11 +155,10 @@ export default function ListTodo({ notify }: ListTodoProps) {
       },
     },
     {
-      title: "PRIORITY",
+      title: t("list_todo.priority"),
       dataIndex: "priority",
       align: "center",
-      sorter: (a, b) =>
-        priorityWeight[a.priority] - priorityWeight[b.priority],
+      sorter: (a, b) => priorityWeight[a.priority] - priorityWeight[b.priority],
       render: (priority: Priority) => {
         let color = "";
         switch (priority) {
@@ -141,11 +175,20 @@ export default function ListTodo({ notify }: ListTodoProps) {
             color = "text-red-600 font-bold";
             break;
         }
-        return <span className={color}>{priority}</span>;
+
+        const priorityKey: Record<Priority, string> = {
+          Low: "priority.low",
+          Medium: "priority.medium",
+          High: "priority.high",
+          Critical: "priority.critical",
+        };
+
+        return <span className={color}>{t(priorityKey[priority])}</span>;
       },
     },
+
     {
-      title: "ACTIONS",
+      title: t("list_todo.actions"),
       align: "center",
       render: (record: Todo) => (
         <>
@@ -159,18 +202,17 @@ export default function ListTodo({ notify }: ListTodoProps) {
                 priority: record.priority,
               })
             }
-            key="edit"
             icon={<EditOutlined />}
             disabled={record.completed}
           />
           <Popconfirm
-            title="Confirm deletion"
-            description="Are you sure you want to delete this task?"
-            okText="Delete"
-            cancelText="Cancel"
+            title={t("prop_confirm.delete_confirm")}
+            description={t("prop_confirm.delete_confirm_one")}
+            okText={t("button.delete_ok")}
+            cancelText={t("button.cancel")}
             onConfirm={() => handleDelete(record.id)}
           >
-            <Button danger type="link" icon={<DeleteOutlined />} key="delete" />
+            <Button danger type="link" icon={<DeleteOutlined />} />
           </Popconfirm>
         </>
       ),
@@ -188,21 +230,33 @@ export default function ListTodo({ notify }: ListTodoProps) {
     <div>
       <Table<Todo>
         bordered
-        dataSource={filteredTodos}
+        loading={isLoading}
+        dataSource={data?.content ?? []}
         columns={columns}
         rowSelection={rowSelection}
         rowKey="id"
         pagination={{
           current: currentPage,
           pageSize: pageSize,
-          total: filteredTodos.length,
+          total: data?.totalElements ?? 0,
           showSizeChanger: true,
           pageSizeOptions: ["5", "10", "20", "50"],
           onChange: (page, size) => {
-            setCurrentPage(page);
-            setPageSize(size);
+            useTodoStore.setState({
+              currentPage: page,
+              pageSize: size || pageSize,
+            });
           },
           position: ["bottomCenter"],
+        }}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onChange={(pagination, filters, sorter: any) => {
+          useTodoStore.setState({
+            currentPage: pagination.current ?? 1,
+            pageSize: pagination.pageSize ?? pageSize,
+            sortField: sorter.field || "createdAt",
+            sortOrder: sorter.order || "descend",
+          });
         }}
       />
     </div>
