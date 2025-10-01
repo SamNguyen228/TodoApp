@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const GOONG_API_KEY = process.env.NEXT_PUBLIC_GOONG_API_KEY;
 
@@ -49,8 +49,8 @@ export const fetchLocation = async (
         }
 
         throw new Error("Invalid parameters!");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
+    } catch (error) {
+        const err = error as AxiosError;
         console.error("fetchLocation error:", err.message || err);
         throw new Error(err.message || "Failed to fetch location");
     }

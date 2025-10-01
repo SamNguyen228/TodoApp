@@ -22,7 +22,7 @@ export default function WeatherWidget({ notify }: WeatherProps) {
   const [address, setAddress] = useState("");
   const [displayName, setDisplayName] = useState<string>("");
   const [time, setTime] = useState<string>("");
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -63,7 +63,7 @@ export default function WeatherWidget({ notify }: WeatherProps) {
   };
 
   const { data: weatherData, isLoading } = useQuery({
-    queryKey: ["weather", coords],
+    queryKey: ["weather", coords, i18n.language],
     queryFn: () => fetchWeatherByCoords(coords!.lat, coords!.lon),
     enabled: !!coords,
     staleTime: 3600000
@@ -124,17 +124,18 @@ export default function WeatherWidget({ notify }: WeatherProps) {
             className="!bg-white hover:bg-blue-600 border-none"
           />
 
-          <LocationSelector
-            notify={notify}
-            onSelect={(addr) => geocodeMutation.mutate(addr)}
-          />
-
           <Button
             type="primary"
             shape="round"
             onClick={getLocation}
             icon={<MdMyLocation className="!text-red-500 hover:scale-150"/>}
             className="!bg-white hover:bg-blue-600 border-none"
+          />
+
+          <LocationSelector
+            notify={notify}
+            onSelect={(addr) => geocodeMutation.mutate(addr)}
+            onClear={getLocation}
           />
         </div>
 
@@ -192,7 +193,7 @@ export default function WeatherWidget({ notify }: WeatherProps) {
             </div>
           </div>
         ) : (
-          <p className="text-center text-red-500">{t("weather.empty_data")}</p>
+          <p className="text-center text-red-500 font-bold">{t("weather.empty_data")}</p>
         )}
       </Card>
     </div>

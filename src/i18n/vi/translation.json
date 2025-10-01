@@ -76,13 +76,14 @@
     "province_placeholder": "Tỉnh/Thành phố",  
     "district_placeholder": "Quận/Huyện",  
     "ward_placeholder": "Phường/Xã"  
-  },  
+  },
   "title": {  
     "login": "Đăng nhập",  
     "register": "Đăng ký",  
     "task_name": "Tên công việc",  
     "deadline": "Hạn chót",  
     "priority": "Độ ưu tiên",  
+    "select_date": "Chọn ngày",
     "app_name": "Quản lý công việc",  
     "greet": "Xin chào",  
     "weather_widget": "Tiện ích Thời tiết"  

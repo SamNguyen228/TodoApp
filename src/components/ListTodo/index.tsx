@@ -70,10 +70,15 @@ export default function ListTodo({ notify }: ListTodoProps) {
   });
 
   const handleDelete = (id: number) => {
-    deleteTodoMutation.mutate(id);
-    notify.success({
-      message: "Success",
-      description: "Task has been removed from the list",
+    deleteTodoMutation.mutate(id, {
+      onSuccess: () => {
+        setSelectedIds(selectedIds.filter((selectedId) => selectedId !== id));
+
+        notify.success({
+          message: t("notify.success"),
+          description: t("notify.success_deleted"),
+        });
+      },
     });
   };
 

@@ -1,4 +1,4 @@
-import { Input, Button, DatePicker, Select } from "antd";
+import { Input, Button, Select } from "antd";
 import type { SelectProps } from "antd";
 import dayjs from "dayjs";
 import { type Priority } from "@/stores/todoStore";
@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import TodoApi from "@/api/TodoApi";
 import { MUTATION_KEYS } from "@/constants/queryKeys";
 import { QUERY_KEYS } from "@/constants/queryKeys";
+import LocalizedDatePicker from "../LocalizedDatePicker";
 
 interface InputAddProps {
   notify: NotificationInstance;
@@ -25,8 +26,11 @@ export default function InputAdd({ notify }: InputAddProps) {
 
   const createMutation = useMutation({
     mutationKey: [MUTATION_KEYS.CREATE_TODO],
-    mutationFn: (payload: { title: string; deadline: string | null; priority: Priority }) =>
-      TodoApi.createTodo(payload.title, payload.deadline, payload.priority),
+    mutationFn: (payload: {
+      title: string;
+      deadline: string | null;
+      priority: Priority;
+    }) => TodoApi.createTodo(payload.title, payload.deadline, payload.priority),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TODOS] });
     },
@@ -38,7 +42,11 @@ export default function InputAdd({ notify }: InputAddProps) {
     { value: "High", label: t("priority.high") },
     {
       value: "Critical",
-      label: <span className="text-red-500 font-semibold">{t("priority.critical")}</span>,
+      label: (
+        <span className="text-red-500 font-semibold">
+          {t("priority.critical")}
+        </span>
+      ),
     },
   ];
 
@@ -76,7 +84,7 @@ export default function InputAdd({ notify }: InputAddProps) {
       } else {
         notify.error({
           message: t("notify.error"),
-          description:  t("notify.error_add_failed"),
+          description: t("notify.error_add_failed"),
         });
       }
     } finally {
@@ -93,19 +101,19 @@ export default function InputAdd({ notify }: InputAddProps) {
         onPressEnter={handleAdd}
         autoFocus
       />
-      <DatePicker
+      <LocalizedDatePicker
         value={deadline}
         onChange={(value) => setDeadline(value)}
+        placeholder={t("add_todo.deadline")}
         showTime
         format="DD-MM-YYYY HH:mm"
-        placeholder={t("add_todo.deadline")}
-        className="w-100"
+        className="w-150"
       />
       <Select
         value={priority}
         onChange={(val) => setPriority(val)}
         options={priorityOptions}
-        style={{ width: 240 }}
+        style={{ width: 300 }}
       />
       <Button
         type="primary"

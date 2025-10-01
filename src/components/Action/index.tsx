@@ -76,7 +76,7 @@ export default function Action({ notify }: ActionProps) {
 
       <Popconfirm
         title={t("prop_confirm.delete_confirm")}
-        description={t("prop_confirm.delete_confirm_des", { count: selectedIds.length })}
+        description={t("prop_confirm.delete_confirm_many", { count: selectedIds.length })}
         okText={t("button.delete_ok")}
         cancelText={t("button.cancel")}
         onConfirm={handleDelete}

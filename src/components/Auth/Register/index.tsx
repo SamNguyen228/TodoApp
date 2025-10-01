@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { register } from "@/api/BackendApi/auth";
 import { NotificationInstance } from "antd/es/notification/interface";
@@ -6,6 +7,7 @@ import { Form, Input, Button, Typography, Card } from "antd";
 import { useTranslation } from "react-i18next";
 import AuthHeader from "@/components/AuthHeader";
 import Link from "next/link";
+import { AxiosError } from "axios";
 
 const { Title, Text } = Typography;
 
@@ -45,8 +47,8 @@ export default function RegisterForm({ notify }: AuthProps) {
         description: t("notify.register_success"),
       });
       window.location.href = "/login";
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as AxiosError;
       notify.error({
         message: t("notify.error_register_failed"),
         description: err?.message || t("notify.error"),
@@ -102,7 +104,7 @@ export default function RegisterForm({ notify }: AuthProps) {
               },
               { min: 2, message: t("form.name_rule_min") },
               {
-                pattern: /^[A-Za-z]+$/,
+                pattern: /^[\p{L}]+$/u,
                 message: t("form.name_rule_pattern"),
               },
             ]}

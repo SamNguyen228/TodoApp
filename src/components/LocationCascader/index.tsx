@@ -15,11 +15,12 @@ import { useTranslation } from "react-i18next";
 interface Props {
   notify: NotificationInstance;
   onSelect: (address: string) => void;
+  onClear?: () => void; 
 }
 
 type OptionType = { value: number; label: string };
 
-export default function LocationSelector({ notify, onSelect }: Props) {
+export default function LocationSelector({ notify, onSelect, onClear }: Props) {
   const [provinces, setProvinces] = useState<Province[]>([]);
   const [districts, setDistricts] = useState<District[]>([]);
   const [wards, setWards] = useState<Ward[]>([]);
@@ -39,7 +40,6 @@ export default function LocationSelector({ notify, onSelect }: Props) {
       .catch(() =>
         notify.error({ message: t("notify.error"), description: t("notify.error_load_province") })
       );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleProvinceChange: SelectProps<number, OptionType>["onChange"] = async (value, option) => {
@@ -52,8 +52,10 @@ export default function LocationSelector({ notify, onSelect }: Props) {
       setWardName("");
       setDistricts([]);
       setWards([]);
+      if (onClear) onClear();
       return;
     }
+
     setProvinceCode(option.value);
     setProvinceName(option.label);
     setDistrictCode(null);
@@ -78,8 +80,14 @@ export default function LocationSelector({ notify, onSelect }: Props) {
       setWardCode(null);
       setWardName("");
       setWards([]);
+      if (provinceName) {
+        onSelect(provinceName);
+      } else if (onClear) {
+        onClear();
+      }
       return;
     }
+
     setDistrictCode(option.value);
     setDistrictName(option.label);
     setWardCode(null);
@@ -100,8 +108,16 @@ export default function LocationSelector({ notify, onSelect }: Props) {
     if (!option || Array.isArray(option) || value === undefined) {
       setWardCode(null);
       setWardName("");
+      if (districtName && provinceName) {
+        onSelect(`${districtName}, ${provinceName}`);
+      } else if (provinceName) {
+        onSelect(provinceName);
+      } else if (onClear) {
+        onClear();
+      }
       return;
     }
+
     setWardCode(option.value);
     setWardName(option.label);
     if (districtName && provinceName) {

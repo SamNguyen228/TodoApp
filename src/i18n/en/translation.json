@@ -31,11 +31,9 @@
     "login_success": "Login Successful!",
     "logout_success": "Logout Successful!",
     "update_task_success": "Update task sucessful!",
-    
     "delete": "Delete",
     "warning": "Warning",
     "warning_blank": "Please fill your content!",
-    
     "error": "Error",
     "error_add_failed": "Failed to add task!",
     "error_login_failed": "Login failed",
@@ -86,6 +84,7 @@
     "task_name": "Task Name",
     "deadline": "Deadline",
     "priority": "Priority",
+    "select_date": "Select date",
     "app_name": "Todo App",
     "greet": "Hello",
     "weather_widget": "Weather Widget"

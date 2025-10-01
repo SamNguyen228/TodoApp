@@ -6,6 +6,7 @@ import { Form, Input, Button, Typography, Card } from "antd";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import AuthHeader from "@/components/AuthHeader";
+import { AxiosError } from "axios";
 
 const { Title, Text } = Typography;
 
@@ -29,8 +30,8 @@ export default function LoginForm({ notify }: AuthProps) {
       });
 
       window.location.href = "/todo";
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as AxiosError;
       notify.error({
         message: t("notify.error"),
         description: err?.message || "Something went wrong",
@@ -54,7 +55,7 @@ export default function LoginForm({ notify }: AuthProps) {
               { required: true, message: t("validation.required",  {fieldName: t("form.name_label")}) },
               { min: 2, message: t("form.name_rule_min") },
               {
-                pattern: /^[A-Za-z]+$/,
+                pattern: /^[\p{L}]+$/u,
                 message: t("form.name_rule_pattern"),
               },
             ]}

@@ -1,4 +1,5 @@
 import axiosClient from "@/api/axiosClient";
+import { AxiosError } from "axios";
 import i18n from "@/i18n";
 
 export async function login(username: string, password: string) {
@@ -8,8 +9,8 @@ export async function login(username: string, password: string) {
       password,
     });
     return response.data;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (err: any) {
+  } catch (error) {
+    const err = error as AxiosError;
     if (err.response?.status === 401) {
       throw new Error(i18n.t("notify.error_invalid"));
     }

@@ -32,7 +32,7 @@ export default function AppHeader({ notify }: HeaderProps) {
     setUser(null);
     notify.success({
       message: t("notify.success"),
-      description: t("notify.logout_success")
+      description: t("notify.logout_success"),
     });
     window.location.href = "/login";
   };
@@ -51,17 +51,20 @@ export default function AppHeader({ notify }: HeaderProps) {
           paddingInline: "24px",
         }}
       >
-        <Space align="center">
-          <FaListCheck className="text-2xl text-blue-500" />
-          <Text strong className="text-xl text-gray-700">
-            {t("title.app_name")}
-          </Text>
+        <Space align="center" direction="horizontal">
+          <Link href="/" className="flex items-center gap-2">
+            <FaListCheck className="text-2xl text-blue-500" />
+            <span className="text-xl font-semibold text-gray-700">
+              {t("title.app_name")}
+            </span>
+          </Link>
         </Space>
 
         {user ? (
           <Space align="center">
             <Text className="text-gray-600">
-              {t("title.greet")}, <b className="text-cyan-300">{user.username}</b>
+              {t("title.greet")},{" "}
+              <b className="text-cyan-300">{user.username}</b>
             </Text>
             <Popconfirm
               title={t("prop_confirm.logout_confirm")}

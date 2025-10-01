@@ -85,6 +85,7 @@
     "task_name": "Aufgabenname",
     "deadline": "Frist",
     "priority": "Priorität",
+    "select_date": "Datum auswählen",
     "app_name": "Todo App",
     "greet": "Hallo",
     "weather_widget": "Wetter-Widget"
