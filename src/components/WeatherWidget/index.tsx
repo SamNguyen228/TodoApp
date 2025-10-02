@@ -78,7 +78,7 @@ export default function WeatherWidget({ notify }: WeatherProps) {
     onError: () => {
       notify.error({
         message: t("notify.error"),
-        description: t("error.error_not_found_address"),
+        description: t("notify.error_not_found_address"),
       });
     },
   });

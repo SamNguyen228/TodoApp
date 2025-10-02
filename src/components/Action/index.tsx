@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Button, Popconfirm } from "antd";
 import type { NotificationInstance } from "antd/es/notification/interface";
-import { useTodoStore } from "@/stores/todoStore";
+import { Todo, useTodoStore } from "@/stores/todoStore";
 import { CheckOutlined, DeleteOutlined } from "@ant-design/icons";
 import FireworkCelebration from "@/components/FireworkCelebration";
 import { useTranslation } from "react-i18next";
@@ -39,7 +39,15 @@ export default function Action({ notify }: ActionProps) {
     },
   });
 
-  const allSelectedCompleted = false;
+  // const allSelectedCompleted = false;
+
+  const allTodos = queryClient
+    .getQueriesData<{ content: Todo[] }>({ queryKey: [QUERY_KEYS.TODOS] })
+    .flatMap(([_, data]) => data?.content ?? []);
+
+  const allSelectedCompleted =
+    selectedIds.length > 0 &&
+    selectedIds.every((id) => allTodos.find((t) => t.id === id)?.completed);
 
   const handleComplete = () => {
     completeManyMutation.mutate(selectedIds);

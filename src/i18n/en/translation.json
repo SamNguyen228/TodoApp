@@ -87,7 +87,8 @@
     "select_date": "Select date",
     "app_name": "Todo App",
     "greet": "Hello",
-    "weather_widget": "Weather Widget"
+    "weather_widget": "Weather Widget",
+    "loading": "Please wait a moment..."
   },
   "validation": {
     "required": "{{fieldName}} cannot be empty"

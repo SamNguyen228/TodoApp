@@ -88,7 +88,8 @@
     "select_date": "Datum auswählen",
     "app_name": "Todo App",
     "greet": "Hallo",
-    "weather_widget": "Wetter-Widget"
+    "weather_widget": "Wetter-Widget",
+    "loading": "Bitte warten Sie einen Moment..."
   },
   "validation": {
     "required": "{{fieldName}} darf nicht leer sein"

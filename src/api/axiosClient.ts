@@ -13,6 +13,7 @@ axiosClient.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
     if (token) {
       config.headers = config.headers ?? {};
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (config.headers as any).Authorization = `Bearer ${token}`;
     }
   }

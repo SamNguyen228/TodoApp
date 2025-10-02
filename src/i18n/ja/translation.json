@@ -88,7 +88,8 @@
     "select_date": "日付を選択",
     "app_name": "アプリ",
     "greet": "こんにちは",
-    "weather_widget": "天気ウィジェット"
+    "weather_widget": "天気ウィジェット",
+    "loading": "少々お待ちください..."
   },
   "validation": {
     "required": "{{fieldName}} は必須です"
